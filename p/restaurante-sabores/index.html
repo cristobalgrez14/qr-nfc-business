@@ -1,1 +1,316 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <title>Perfil de negocio</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #111111;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #111111, #242424);
+            color: white;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            padding: 30px 20px;
+        }
+
+        .card {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.06);
+    padding: 30px 22px;
+    border-radius: 24px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+}
+.logo {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 15px;
+    border: 3px solid white;
+}
+        h1 {
+    margin: 10px 0 8px;
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+        .description {
+    opacity: 0.8;
+    margin: 0 auto 25px;
+    line-height: 1.6;
+    max-width: 400px;
+}
+
+        .info {
+    margin: 20px 0 25px;
+    line-height: 1.7;
+    opacity: 0.9;
+}
+
+.info p {
+    margin: 6px 0;
+}
+       .button {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    margin: 12px 0;
+    border-radius: 14px;
+    background: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    transition: transform 0.2s, opacity 0.2s;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+.button:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="card">
+<img id="logo" class="logo hidden" alt="Logo del negocio">
+        <h1 id="name">Cargando...</h1>
+
+        <p id="description" class="description"></p>
+
+        <div class="info">
+            <p id="category"></p>
+            <p id="address"></p>
+            <p id="phone"></p>
+            <p id="hours"></p>
+        </div>
+
+        <a id="whatsapp" class="button hidden" target="_blank">
+            WhatsApp
+        </a>
+<a id="call" class="button hidden">
+    📞 Llamar
+</a>
+        <a id="instagram" class="button hidden" target="_blank">
+            Instagram
+        </a>
+
+        <a id="maps" class="button hidden" target="_blank">
+            📍 Cómo llegar
+        </a>
+
+        <a id="website" class="button hidden" target="_blank">
+            🌐 Sitio web
+        </a>
+
+    </div>
+</div>
+
+<script>
+
+const SUPABASE_URL =
+    "https://ktguetjvnhcylybxfjto.supabase.co";
+
+const SUPABASE_ANON_KEY =
+    "sb_publishable_jh7Ytp-pUWZvI9isV_-Sbg_aTbY4Qfq";
+
+
+const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+);
+
+
+// Detectar automáticamente el slug desde la URL
+
+const pathParts = window.location.pathname
+    .split("/")
+    .filter(Boolean);
+
+
+// Buscar la última parte de la URL
+
+const slug = pathParts[pathParts.length - 1];
+
+
+// Buscar el negocio en Supabase
+
+async function loadBusiness() {
+
+    const { data, error } = await supabaseClient
+        .from("businesses")
+        .select("*")
+        .eq("slug", slug)
+        .eq("is_published", true)
+        .single();
+
+
+    if (error || !data) {
+
+        document.getElementById("name").textContent =
+            "Negocio no encontrado";
+
+        console.error("Error:", error);
+
+        return;
+    }  
+
+// Logo
+
+if (data.logo_url) {
+
+    const logo =
+        document.getElementById("logo");
+
+    logo.src =
+        data.logo_url;
+
+    logo.classList.remove("hidden");
+}
+
+    // Título de la página
+
+    document.title =
+        data.name || "Perfil de negocio";
+
+
+    // Información principal
+
+    document.getElementById("name").textContent =
+        data.name || "";
+
+    document.getElementById("description").textContent =
+        data.description || "";
+
+    document.getElementById("category").textContent =
+        data.category || "";
+
+    document.getElementById("address").textContent =
+        data.address || "";
+
+    document.getElementById("phone").textContent =
+        data.phone || "";
+
+    document.getElementById("hours").textContent =
+        data.opening_hours || "";
+
+
+    // Color principal
+
+    document.documentElement.style.setProperty(
+        "--primary-color",
+        data.primary_color || "#111111"
+    );
+
+
+    // WhatsApp
+
+    if (data.whatsapp) {
+
+        const whatsapp =
+            document.getElementById("whatsapp");
+
+        whatsapp.href =
+    "https://wa.me/" + data.whatsapp +
+    "?text=" + encodeURIComponent(
+        "Hola, vi su perfil y me gustaría obtener más información."
+    );
+
+        whatsapp.classList.remove("hidden");
+    }
+// Llamar
+
+if (data.phone) {
+
+    const call =
+        document.getElementById("call");
+
+    call.href =
+        "tel:" + data.phone.replace(/\s/g, "");
+
+    call.classList.remove("hidden");
+}
+
+    // Instagram
+
+    if (data.instagram) {
+
+        const instagram =
+            document.getElementById("instagram");
+
+        instagram.href =
+            data.instagram;
+
+        instagram.classList.remove("hidden");
+    }
+
+
+    // Google Maps
+
+    if (data.maps_url) {
+
+        const maps =
+            document.getElementById("maps");
+
+        maps.href =
+            data.maps_url;
+
+        maps.classList.remove("hidden");
+    }
+
+
+    // Sitio web
+
+    if (data.website) {
+
+        const website =
+            document.getElementById("website");
+
+        website.href =
+            data.website;
+
+        website.classList.remove("hidden");
+    }
+
+}
+
+
+// Ejecutar
+
+loadBusiness();
+
+</script>
+
+</body>
+</html>
+```
