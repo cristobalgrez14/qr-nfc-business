@@ -236,7 +236,18 @@ if (data.logo_url) {
 
         whatsapp.classList.remove("hidden");
     }
+// Llamar
 
+if (data.phone) {
+
+    const call =
+        document.getElementById("call");
+
+    call.href =
+        "tel:" + data.phone.replace(/\s/g, "");
+
+    call.classList.remove("hidden");
+}
 
     // Instagram
 
