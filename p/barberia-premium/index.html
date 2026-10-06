@@ -159,8 +159,20 @@ async function loadBusiness() {
         console.error("Error:", error);
 
         return;
-    }
+    }  
 
+// Logo
+
+if (data.logo_url) {
+
+    const logo =
+        document.getElementById("logo");
+
+    logo.src =
+        data.logo_url;
+
+    logo.classList.remove("hidden");
+}
 
     // Título de la página
 
