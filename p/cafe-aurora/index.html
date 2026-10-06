@@ -1,37 +1,32 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Café Aurora</title>
 
-    <meta name="description"
-          content="Café Aurora - Café, pastelería y buenos momentos.">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
-
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
         }
 
         body {
-            font-family: Arial, sans-serif;
-            background: #0b0b0f;
-            color: white;
+            margin: 0;
             min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: #111;
+            color: white;
+            display: flex;
+            justify-content: center;
         }
 
         .container {
-            max-width: 500px;
-            margin: auto;
-            padding: 35px 20px;
+            width: 100%;
+            max-width: 480px;
+            padding: 40px 20px;
             text-align: center;
         }
 
@@ -39,114 +34,160 @@
             width: 100px;
             height: 100px;
             border-radius: 50%;
-            background: #22222a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 20px auto;
-            font-size: 40px;
+            object-fit: cover;
+            background: #222;
+            margin-bottom: 20px;
         }
 
         h1 {
-            font-size: 32px;
-            margin-top: 15px;
+            margin: 10px 0;
+            font-size: 30px;
         }
 
         .description {
-            color: #aaaab5;
-            margin: 12px 0 30px;
-            line-height: 1.5;
+            color: #bbb;
+            margin-bottom: 30px;
         }
 
         .button {
             display: block;
-            padding: 17px;
-            margin: 14px 0;
-            background: #19191f;
-            border: 1px solid #30303a;
+            width: 100%;
+            padding: 16px;
+            margin: 12px 0;
+            border-radius: 12px;
+            background: #222;
             color: white;
             text-decoration: none;
-            border-radius: 12px;
             font-weight: bold;
-            transition: 0.2s;
         }
 
         .button:hover {
-            transform: translateY(-2px);
-            background: #25252e;
+            background: #333;
         }
 
-        .whatsapp {
-            background: #25D366;
-            border: none;
+        #loading {
+            color: #aaa;
+            margin-top: 40px;
         }
 
-        .menu {
-            background: #6c63ff;
-            border: none;
+        #error {
+            color: #ff6b6b;
+            margin-top: 40px;
+            display: none;
         }
-
-        .footer {
-            margin-top: 35px;
-            color: #666;
-            font-size: 13px;
-        }
-
     </style>
-
 </head>
 
 <body>
 
 <div class="container">
 
-    <div class="logo">
-        ☕
+    <div id="loading">
+        Cargando perfil...
     </div>
 
-    <h1>Café Aurora</h1>
+    <div id="error">
+        No se pudo cargar el perfil.
+    </div>
 
-    <p class="description">
-        Café de especialidad, pastelería y buenos momentos.
-        Ven a conocernos.
-    </p>
+    <div id="profile" style="display:none;">
 
-    <a class="button whatsapp"
-       href="https://wa.me/56912345678"
-       target="_blank">
-        💬 Contactar por WhatsApp
-    </a>
+        <img id="logo" class="logo" src="" alt="Logo">
 
-    <a class="button menu"
-       href="#"
-       target="_blank">
-        📋 Ver menú
-    </a>
+        <h1 id="name"></h1>
 
-    <a class="button"
-       href="https://instagram.com/"
-       target="_blank">
-        📸 Instagram
-    </a>
+        <p id="description" class="description"></p>
 
-    <a class="button"
-       href="https://maps.google.com/"
-       target="_blank">
-        📍 Cómo llegar
-    </a>
+        <a id="whatsapp" class="button" target="_blank">
+            WhatsApp
+        </a>
 
-    <a class="button"
-       href="#"
-       target="_blank">
-        ⭐ Dejar una reseña
-    </a>
+        <a id="instagram" class="button" target="_blank">
+            Instagram
+        </a>
 
-    <div class="footer">
-        Perfil digital creado por QRNFC Business
+        <a id="maps" class="button" target="_blank">
+            📍 Cómo llegar
+        </a>
+
+        <a id="website" class="button" target="_blank">
+            🌐 Sitio web
+        </a>
+
     </div>
 
 </div>
 
-</body>
+<script>
 
+    const SUPABASE_URL = "https://ktguetjvnhcylybxfjto.supabase.co";
+
+    const SUPABASE_ANON_KEY = "TU_CLAVE_PUBLICA";
+
+    const supabaseClient = supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+    );
+
+    async function loadBusiness() {
+
+        const { data, error } = await supabaseClient
+            .from("businesses")
+            .select("*")
+            .eq("slug", "cafe-aurora")
+            .single();
+
+        if (error) {
+            console.error(error);
+
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("error").style.display = "block";
+
+            return;
+        }
+
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("profile").style.display = "block";
+
+        document.getElementById("name").textContent = data.name;
+        document.getElementById("description").textContent =
+            data.description || "";
+
+        if (data.logo_url) {
+            document.getElementById("logo").src = data.logo_url;
+        } else {
+            document.getElementById("logo").style.display = "none";
+        }
+
+        if (data.whatsapp) {
+            document.getElementById("whatsapp").href =
+                "https://wa.me/" + data.whatsapp;
+        } else {
+            document.getElementById("whatsapp").style.display = "none";
+        }
+
+        if (data.instagram) {
+            document.getElementById("instagram").href = data.instagram;
+        } else {
+            document.getElementById("instagram").style.display = "none";
+        }
+
+        if (data.maps_url) {
+            document.getElementById("maps").href = data.maps_url;
+        } else {
+            document.getElementById("maps").style.display = "none";
+        }
+
+        if (data.website) {
+            document.getElementById("website").href = data.website;
+        } else {
+            document.getElementById("website").style.display = "none";
+        }
+    }
+
+    loadBusiness();
+
+</script>
+
+</body>
 </html>
