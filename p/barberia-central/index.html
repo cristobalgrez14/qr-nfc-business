@@ -162,6 +162,17 @@
 
         document.getElementById("name").textContent = data.name;
         document.getElementById("description").textContent = data.description || "";
+        document.getElementById("category").textContent =
+    data.category || "";
+
+document.getElementById("address").textContent =
+    data.address || "";
+
+document.getElementById("phone").textContent =
+    data.phone || "";
+
+document.getElementById("hours").textContent =
+    data.opening_hours || "";
 
         if (data.logo_url) {
             document.getElementById("logo").src = data.logo_url;
