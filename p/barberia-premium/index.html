@@ -385,15 +385,17 @@ const currentUrl = window.location.href.split("?")[0];
 const qrCode =
     document.getElementById("qr-code");
 
-qrCode.src =
-    "https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=" +
-    encodeURIComponent(currentUrl);
+const qrUrl =
+    "https://quickchart.io/qr?text=" +
+    encodeURIComponent(currentUrl) +
+    "&size=500";
+
+qrCode.src = qrUrl;
 
 const downloadQr =
     document.getElementById("download-qr");
 
-downloadQr.href =
-    qrCode.src;
+downloadQr.href = qrUrl;
 
 loadBusiness();
 
