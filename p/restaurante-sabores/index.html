@@ -132,7 +132,32 @@
         <a id="website" class="button hidden" target="_blank">
             🌐 Sitio web
         </a>
+<div id="qr-container" style="margin-top: 25px;">
+    <p style="opacity: 0.8; margin-bottom: 12px;">
+        Escanea para ver este perfil
+    </p>
 
+    <img
+        id="qr-code"
+        alt="Código QR"
+        style="
+            width: 220px;
+            height: 220px;
+            background: white;
+            padding: 10px;
+            border-radius: 16px;
+        "
+    >
+
+    <a
+        id="download-qr"
+        class="button"
+        download="codigo-qr.png"
+        style="margin-top: 15px;"
+    >
+        📥 Descargar QR
+    </a>
+</div>
     </div>
 </div>
 
@@ -306,7 +331,21 @@ if (data.phone) {
 
 
 // Ejecutar
+// Generar QR automáticamente
+const currentUrl = window.location.href.split("?")[0];
 
+const qrCode =
+    document.getElementById("qr-code");
+
+qrCode.src =
+    "https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=" +
+    encodeURIComponent(currentUrl);
+
+const downloadQr =
+    document.getElementById("download-qr");
+
+downloadQr.href =
+    qrCode.src;
 loadBusiness();
 
 </script>
