@@ -13,15 +13,19 @@
             box-sizing: border-box;
         }
 
-        body {
-            margin: 0;
-            min-height: 100vh;
-            font-family: Arial, sans-serif;
-            background: #111;
-            color: white;
-            display: flex;
-            justify-content: center;
-        }
+ :root {
+    --primary-color: #111;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background: #111;
+    color: white;
+    display: flex;
+    justify-content: center;
+}
 
         .container {
             width: 100%;
@@ -55,7 +59,7 @@
             padding: 16px;
             margin: 12px 0;
             border-radius: 12px;
-            background: #222;
+            background: var(--primary-color);
             color: white;
             text-decoration: none;
             font-weight: bold;
@@ -162,6 +166,11 @@
 document.getElementById("address").textContent = data.address || "";
 document.getElementById("phone").textContent = data.phone || "";
 document.getElementById("hours").textContent = data.opening_hours || "";
+
+        document.documentElement.style.setProperty(
+    "--primary-color",
+    data.primary_color || "#111111"
+);
 
         if (data.logo_url) {
             document.getElementById("logo").src = data.logo_url;
