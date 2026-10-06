@@ -241,7 +241,10 @@ if (data.logo_url) {
             document.getElementById("whatsapp");
 
         whatsapp.href =
-            "https://wa.me/" + data.whatsapp;
+    "https://wa.me/" + data.whatsapp +
+    "?text=" + encodeURIComponent(
+        "Hola, vi su perfil y me gustaría obtener más información."
+    );
 
         whatsapp.classList.remove("hidden");
     }
