@@ -1,9 +1,414 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Admin</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Admin | QR NFC Business</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#0b0b0b;
+    color:#fff;
+}
+
+.container{
+    width:min(1100px,92%);
+    margin:auto;
+}
+
+header{
+    padding:28px 0;
+    border-bottom:1px solid #242424;
+}
+
+.header-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+}
+
+.logo{
+    font-size:22px;
+    font-weight:800;
+}
+
+.status{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    background:#14251b;
+    color:#75e0a0;
+    padding:8px 12px;
+    border-radius:999px;
+    font-size:13px;
+}
+
+.status-dot{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:#35c878;
+}
+
+.hero{
+    padding:45px 0 30px;
+}
+
+.hero h1{
+    font-size:clamp(30px,6vw,52px);
+    margin:0 0 12px;
+}
+
+.hero p{
+    color:#999;
+    margin:0;
+    line-height:1.6;
+}
+
+.dashboard{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+    padding-bottom:35px;
+}
+
+.card{
+    background:#151515;
+    border:1px solid #272727;
+    border-radius:20px;
+    padding:22px;
+}
+
+.card h2{
+    margin:0 0 8px;
+    font-size:20px;
+}
+
+.card p{
+    color:#999;
+    line-height:1.5;
+    margin:0 0 18px;
+}
+
+.icon{
+    font-size:30px;
+    margin-bottom:18px;
+}
+
+.button{
+    display:inline-flex;
+    justify-content:center;
+    align-items:center;
+    width:100%;
+    min-height:48px;
+    padding:12px 16px;
+    border-radius:12px;
+    background:#fff;
+    color:#111;
+    text-decoration:none;
+    font-weight:700;
+    border:0;
+    cursor:pointer;
+}
+
+.button.secondary{
+    background:#222;
+    color:#fff;
+}
+
+.preview{
+    margin-bottom:40px;
+}
+
+.preview-box{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    background:#151515;
+    border:1px solid #272727;
+    border-radius:20px;
+    padding:25px;
+}
+
+.preview-box h2{
+    margin:0 0 8px;
+}
+
+.preview-box p{
+    margin:0;
+    color:#999;
+}
+
+footer{
+    border-top:1px solid #242424;
+    padding:25px 0 40px;
+    color:#666;
+    text-align:center;
+    font-size:13px;
+}
+
+@media(max-width:750px){
+
+    .dashboard{
+        grid-template-columns:1fr;
+    }
+
+    .header-row{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .preview-box{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+}
+
+</style>
 </head>
+
 <body>
-    <h1>Panel de administración</h1>
+
+<header>
+
+<div class="container">
+
+<div class="header-row">
+
+<div class="logo">
+QR NFC BUSINESS
+</div>
+
+<div class="status">
+<span class="status-dot"></span>
+Sistema activo
+</div>
+
+</div>
+
+</div>
+
+</header>
+
+
+<main class="container">
+
+<section class="hero">
+
+<h1>Panel de administración</h1>
+
+<p>
+Gestiona tu perfil digital, diseño, redes, reservas, tienda,
+reseñas, galería, QR y NFC desde un solo lugar.
+</p>
+
+</section>
+
+
+<section class="dashboard">
+
+
+<div class="card">
+
+<div class="icon">🏢</div>
+
+<h2>Mi negocio</h2>
+
+<p>
+Información, contacto, horarios y ubicación.
+</p>
+
+<a class="button" href="#">
+Gestionar negocio
+</a>
+
+</div>
+
+
+<div class="card">
+
+<div class="icon">🎨</div>
+
+<h2>Diseño</h2>
+
+<p>
+Plantillas, colores, botones, tarjetas y estilos.
+</p>
+
+<a class="button" href="#">
+Personalizar diseño
+</a>
+
+</div>
+
+
+<div class="card">
+
+<div class="icon">🔗</div>
+
+<h2>Redes y botones</h2>
+
+<p>
+Instagram, Facebook, YouTube, TikTok y enlaces personalizados.
+</p>
+
+<a class="button" href="#">
+Gestionar botones
+</a>
+
+</div>
+
+
+<div class="card">
+
+<div class="icon">📅</div>
+
+<h2>Reservas</h2>
+
+<p>
+Gestiona horarios, reservas, confirmaciones y no-show.
+</p>
+
+<a class="button" href="#">
+Gestionar reservas
+</a>
+
+</div>
+
+
+<div class="card">
+
+<div class="icon">⭐</div>
+
+<h2>Reseñas</h2>
+
+<p>
+Google Reviews, reseñas propias y fotos de clientes.
+</p>
+
+<a class="button" href="#">
+Gestionar reseñas
+</a>
+
+</div>
+
+
+<div class="card">
+
+<div class="icon">🛍️</div>
+
+<h2>Tienda</h2>
+
+<p>
+Productos, precios, stock y pedidos por WhatsApp.
+</p>
+
+<a class="button" href="#">
+Gestionar tienda
+</a>
+
+</div>
+
+
+<div class="card">
+
+<div class="icon">🖼️</div>
+
+<h2>Galería</h2>
+
+<p>
+Administra las imágenes y fotografías de tu negocio.
+</p>
+
+<a class="button" href="#">
+Gestionar galería
+</a>
+
+</div>
+
+
+<div class="card">
+
+<div class="icon">📱</div>
+
+<h2>QR</h2>
+
+<p>
+Genera y descarga el código QR de tu perfil.
+</p>
+
+<a class="button" href="#">
+Gestionar QR
+</a>
+
+</div>
+
+
+<div class="card">
+
+<div class="icon">📡</div>
+
+<h2>NFC</h2>
+
+<p>
+Configura la URL que utilizarán tus tarjetas NFC.
+</p>
+
+<a class="button" href="#">
+Gestionar NFC
+</a>
+
+</div>
+
+
+</section>
+
+
+<section class="preview">
+
+<div class="preview-box">
+
+<div>
+
+<h2>Vista pública</h2>
+
+<p>
+Comprueba cómo ven los clientes tu perfil digital.
+</p>
+
+</div>
+
+<a
+class="button"
+href="https://cristobalgrez14.github.io/qr-nfc-business/"
+target="_blank"
+>
+Ver plataforma
+</a>
+
+</div>
+
+</section>
+
+</main>
+
+
+<footer>
+
+QR NFC BUSINESS · Plataforma de perfiles digitales
+
+</footer>
+
 </body>
 </html>
