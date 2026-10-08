@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Perfil de negocio</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #111111;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background:
+                radial-gradient(circle at top, #333333 0%, #111111 45%, #050505 100%);
+            color: white;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 520px;
+            padding: 25px 16px 40px;
+        }
+
+        .card {
+            text-align: center;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.12);
+            padding: 32px 22px;
+            border-radius: 30px;
+            backdrop-filter: blur(18px);
+            box-shadow: 0 25px 70px rgba(0,0,0,0.55);
+        }
+
+        .logo {
+            width: 125px;
+            height: 125px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-bottom: 16px;
+            border: 3px solid white;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.45);
+        }
+
+        h1 {
+            margin: 5px 0 6px;
+            font-size: 30px;
+            font-weight: 800;
+        }
+
+        .description {
+            opacity: 0.75;
+            margin: 0 auto 24px;
+            line-height: 1.6;
+            max-width: 420px;
+            font-size: 15px;
+        }
+
+        .info {
+            margin: 20px 0 25px;
+            padding: 15px;
+            border-radius: 18px;
+            background: rgba(255,255,255,0.05);
+            line-height: 1.7;
+        }
+
+        .info p {
+            margin: 7px 0;
+        }
+
+        .button {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            margin: 12px 0;
+            border-radius: 16px;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+            transition: 0.2s ease;
+            box-shadow: 0 8px 22px rgba(0,0,0,0.28);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        #qr-container {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255,255,255,0.12);
+        }
+
+        #qr-container p {
+            font-size: 14px;
+            opacity: 0.65;
+        }
+
+        #qr-code {
+            width: 210px;
+            height: 210px;
+            background: white;
+            padding: 10px;
+            border-radius: 18px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 28px 18px;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+
+            .logo {
+                width: 110px;
+                height: 110px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <img id="logo" class="logo hidden" alt="Logo">
+
+        <h1 id="name">Cargando...</h1>
+
+        <p id="description" class="description"></p>
+
+        <div class="info">
+            <p id="category"></p>
+            <p id="address"></p>
+            <p id="phone"></p>
+            <p id="hours"></p>
+        </div>
+
+        <a id="whatsapp" class="button hidden" target="_blank">
+            💬 Contactar por WhatsApp
+        </a>
+
+        <a id="call" class="button hidden">
+            📞 Llamar ahora
+        </a>
+
+        <a id="instagram" class="button hidden" target="_blank">
+            📸 Instagram
+        </a>
+
+        <a id="maps" class="button hidden" target="_blank">
+            📍 Cómo llegar
+        </a>
+
+        <a id="website" class="button hidden" target="_blank">
+            🌐 Sitio web
+        </a>
+
+        <div id="qr-container">
+
+            <p>Escanea para ver este perfil</p>
+
+            <img
+                id="qr-code"
+                alt="Código QR"
+            >
+
+            <a
+                id="download-qr"
+                class="button"
+                target="_blank"
+                style="margin-top:18px;"
+            >
+                📥 Descargar QR
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const SUPABASE_URL =
+    "https://ktguetjvnhcylybxfjto.supabase.co";
+
+const SUPABASE_ANON_KEY =
+    "sb_publishable_jh7Ytp-pUWZvI9isV_-Sbg_aTbY4Qfq";
+
+const supabaseClient =
+    supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+    );
+
+const pathParts =
+    window.location.pathname
+        .split("/")
+        .filter(Boolean);
+
+const slug =
+    pathParts[pathParts.length - 1];
+
+async function loadBusiness() {
+
+    const { data, error } =
+        await supabaseClient
+            .from("businesses")
+            .select("*")
+            .eq("slug", slug)
+            .eq("is_published", true)
+            .single();
+
+    if (error || !data) {
+
+        document.getElementById("name")
+            .textContent =
+            "Negocio no encontrado";
+
+        console.error(error);
+
+        return;
+    }
+
+    document.title =
+        data.name || "Perfil de negocio";
+
+    document.getElementById("name")
+        .textContent =
+        data.name || "";
+
+    document.getElementById("description")
+        .textContent =
+        data.description || "";
+
+    document.getElementById("category")
+        .textContent =
+        data.category || "";
+
+    document.getElementById("address")
+        .textContent =
+        data.address || "";
+
+    document.getElementById("phone")
+        .textContent =
+        data.phone || "";
+
+    document.getElementById("hours")
+        .textContent =
+        data.opening_hours || "";
+
+    document.documentElement.style
+        .setProperty(
+            "--primary-color",
+            data.primary_color || "#111111"
+        );
+
+    if (data.logo_url) {
+
+        const logo =
+            document.getElementById("logo");
+
+        logo.src =
+            data.logo_url;
+
+        logo.classList.remove("hidden");
+    }
+
+    if (data.whatsapp) {
+
+        const whatsapp =
+            document.getElementById("whatsapp");
+
+        whatsapp.href =
+            "https://wa.me/" +
+            data.whatsapp +
+            "?text=" +
+            encodeURIComponent(
+                "Hola, vi su perfil digital y me gustaría obtener más información. 😊"
+            );
+
+        whatsapp.classList.remove("hidden");
+    }
+
+    if (data.phone) {
+
+        const call =
+            document.getElementById("call");
+
+        call.href =
+            "tel:" +
+            data.phone.replace(/\s/g, "");
+
+        call.classList.remove("hidden");
+    }
+
+    if (data.instagram) {
+
+        const instagram =
+            document.getElementById("instagram");
+
+        instagram.href =
+            data.instagram;
+
+        instagram.classList.remove("hidden");
+    }
+
+    if (data.maps_url) {
+
+        const maps =
+            document.getElementById("maps");
+
+        maps.href =
+            data.maps_url;
+
+        maps.classList.remove("hidden");
+    }
+
+    if (data.website) {
+
+        const website =
+            document.getElementById("website");
+
+        website.href =
+            data.website;
+
+        website.classList.remove("hidden");
+    }
+
+    const currentUrl =
+        window.location.href.split("?")[0];
+
+    const qrUrl =
+        "https://quickchart.io/qr?text=" +
+        encodeURIComponent(currentUrl) +
+        "&size=500";
+
+    const qrCode =
+        document.getElementById("qr-code");
+
+    qrCode.src =
+        qrUrl;
+
+    const downloadQr =
+        document.getElementById("download-qr");
+
+    downloadQr.href =
+        qrUrl;
+}
+
+loadBusiness();
+
+</script>
+
+</body>
+</html>
