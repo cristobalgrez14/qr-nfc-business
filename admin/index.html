@@ -190,6 +190,16 @@ const supabaseClient = window.supabase.createClient(
     SUPABASE_KEY
 );
 </script>
+    <script>
+
+const params = new URLSearchParams(window.location.search);
+
+const businessSlug =
+    params.get("slug") || "demo-automatico";
+
+console.log("Negocio seleccionado:", businessSlug);
+
+</script>
 <body>
 
 <header>
