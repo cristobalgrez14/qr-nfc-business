@@ -1,208 +1,549 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Perfil de negocio</title>
+<title>Perfil de negocio</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<style>
 
-        :root {
-            --primary-color: #111111;
-        }
+:root {
+    --primary-color: #111111;
+    --text: #171717;
+    --muted: #6b7280;
+    --bg: #f5f5f5;
+    --card: #ffffff;
+    --border: #eeeeee;
+}
 
-        body {
-            margin: 0;
-            min-height: 100vh;
-            font-family: Arial, sans-serif;
-            background:
-                radial-gradient(circle at top, #333333 0%, #111111 45%, #050505 100%);
-            color: white;
-            display: flex;
-            justify-content: center;
-        }
+* {
+    box-sizing: border-box;
+}
 
-        .container {
-            width: 100%;
-            max-width: 520px;
-            padding: 25px 16px 40px;
-        }
+html {
+    scroll-behavior: smooth;
+}
 
-        .card {
-            text-align: center;
-            background: rgba(255,255,255,0.07);
-            border: 1px solid rgba(255,255,255,0.12);
-            padding: 32px 22px;
-            border-radius: 30px;
-            backdrop-filter: blur(18px);
-            box-shadow: 0 25px 70px rgba(0,0,0,0.55);
-        }
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background:
+        radial-gradient(circle at top, rgba(0,0,0,.06), transparent 35%),
+        var(--bg);
+    color: var(--text);
+}
 
-        .logo {
-            width: 125px;
-            height: 125px;
-            object-fit: cover;
-            border-radius: 50%;
-            margin-bottom: 16px;
-            border: 3px solid white;
-            box-shadow: 0 10px 35px rgba(0,0,0,0.45);
-        }
+.page {
+    width: 100%;
+    max-width: 680px;
+    margin: auto;
+    padding-bottom: 40px;
+}
 
-        h1 {
-            margin: 5px 0 6px;
-            font-size: 30px;
-            font-weight: 800;
-        }
+/* HERO */
 
-        .description {
-            opacity: 0.75;
-            margin: 0 auto 24px;
-            line-height: 1.6;
-            max-width: 420px;
-            font-size: 15px;
-        }
+.hero {
+    background: var(--primary-color);
+    color: white;
+    min-height: 390px;
+    padding: 45px 25px 35px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
 
-        .info {
-            margin: 20px 0 25px;
-            padding: 15px;
-            border-radius: 18px;
-            background: rgba(255,255,255,0.05);
-            line-height: 1.7;
-        }
+.hero::before {
+    content: "";
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.08);
+    top: -120px;
+    right: -100px;
+}
 
-        .info p {
-            margin: 7px 0;
-        }
+.hero::after {
+    content: "";
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.05);
+    bottom: -120px;
+    left: -80px;
+}
 
-        .button {
-            display: block;
-            width: 100%;
-            padding: 16px;
-            margin: 12px 0;
-            border-radius: 16px;
-            background: var(--primary-color);
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 16px;
-            transition: 0.2s ease;
-            box-shadow: 0 8px 22px rgba(0,0,0,0.28);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
+.logo {
+    width: 110px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid rgba(255,255,255,.9);
+    background: white;
+    margin-bottom: 22px;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 12px 35px rgba(0,0,0,.25);
+}
 
-        .button:hover {
-            transform: translateY(-2px);
-            opacity: 0.9;
-        }
+.hidden {
+    display: none !important;
+}
 
-        #qr-container {
-            margin-top: 30px;
-            padding-top: 25px;
-            border-top: 1px solid rgba(255,255,255,0.12);
-        }
+.badge {
+    display: inline-block;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.13);
+    border: 1px solid rgba(255,255,255,.2);
+    font-size: 13px;
+    margin-bottom: 15px;
+    position: relative;
+    z-index: 2;
+}
 
-        #qr-container p {
-            font-size: 14px;
-            opacity: 0.65;
-        }
+.hero h1 {
+    margin: 0;
+    font-size: clamp(30px, 8vw, 48px);
+    line-height: 1.05;
+    position: relative;
+    z-index: 2;
+}
 
-        #qr-code {
-            width: 210px;
-            height: 210px;
-            background: white;
-            padding: 10px;
-            border-radius: 18px;
-        }
+.hero p {
+    max-width: 520px;
+    margin: 16px auto 0;
+    font-size: 16px;
+    line-height: 1.6;
+    color: rgba(255,255,255,.82);
+    position: relative;
+    z-index: 2;
+}
 
-        .hidden {
-            display: none;
-        }
+/* CTA */
 
-        @media (max-width: 480px) {
-            .card {
-                padding: 28px 18px;
-            }
+.cta-area {
+    padding: 0 20px;
+    margin-top: -28px;
+    position: relative;
+    z-index: 10;
+}
 
-            h1 {
-                font-size: 26px;
-            }
+.primary-button {
+    display: block;
+    width: 100%;
+    padding: 18px 20px;
+    border-radius: 16px;
+    background: white;
+    color: var(--primary-color);
+    text-decoration: none;
+    text-align: center;
+    font-weight: bold;
+    font-size: 17px;
+    box-shadow: 0 12px 30px rgba(0,0,0,.16);
+    transition: .2s;
+}
 
-            .logo {
-                width: 110px;
-                height: 110px;
-            }
-        }
-    </style>
+.primary-button:hover {
+    transform: translateY(-2px);
+}
+
+/* CONTENT */
+
+.content {
+    padding: 28px 20px 0;
+}
+
+.section {
+    margin-top: 28px;
+}
+
+.section-title {
+    font-size: 21px;
+    margin: 0 0 14px;
+}
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 18px;
+    box-shadow: 0 8px 25px rgba(0,0,0,.05);
+}
+
+/* OFFER */
+
+.offer {
+    background: linear-gradient(
+        135deg,
+        var(--primary-color),
+        #222
+    );
+    color: white;
+    border-radius: 22px;
+    padding: 22px;
+    position: relative;
+    overflow: hidden;
+}
+
+.offer::after {
+    content: "★";
+    position: absolute;
+    font-size: 110px;
+    right: -15px;
+    bottom: -45px;
+    opacity: .08;
+}
+
+.offer-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    opacity: .75;
+}
+
+.offer h2 {
+    margin: 8px 0;
+    font-size: 25px;
+}
+
+.offer p {
+    margin: 0;
+    line-height: 1.5;
+    opacity: .85;
+}
+
+/* INFO */
+
+.info-grid {
+    display: grid;
+    gap: 12px;
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+}
+
+.info-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: #f1f1f1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 19px;
+}
+
+.info-text strong {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.info-text span {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* ACTIONS */
+
+.actions {
+    display: grid;
+    gap: 11px;
+}
+
+.action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 54px;
+    padding: 14px;
+    border-radius: 15px;
+    text-decoration: none;
+    font-weight: bold;
+    border: 1px solid var(--border);
+    color: var(--text);
+    background: white;
+    transition: .2s;
+}
+
+.action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,.08);
+}
+
+.action.primary {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+/* QR */
+
+.qr-card {
+    text-align: center;
+}
+
+.qr-card p {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.qr-code {
+    width: min(250px, 75vw);
+    height: min(250px, 75vw);
+    border-radius: 18px;
+    padding: 10px;
+    background: white;
+    border: 1px solid var(--border);
+}
+
+.download {
+    display: block;
+    margin-top: 15px;
+    color: var(--primary-color);
+    font-weight: bold;
+    text-decoration: none;
+}
+
+/* FOOTER */
+
+.footer {
+    text-align: center;
+    padding: 35px 20px 10px;
+    color: #999;
+    font-size: 12px;
+}
+
+@media (min-width: 700px) {
+
+    body {
+        padding: 30px 0;
+    }
+
+    .page {
+        background: white;
+        border-radius: 28px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0,0,0,.12);
+    }
+
+}
+
+</style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="page">
 
-    <div class="card">
+    <!-- HERO -->
+    <section class="hero">
 
         <img id="logo" class="logo hidden" alt="Logo">
 
+        <div id="category" class="badge"></div>
+
         <h1 id="name">Cargando...</h1>
 
-        <p id="description" class="description"></p>
+        <p id="description"></p>
 
-        <div class="info">
-            <p id="category"></p>
-            <p id="address"></p>
-            <p id="phone"></p>
-            <p id="hours"></p>
-        </div>
+    </section>
 
-        <a id="whatsapp" class="button hidden" target="_blank">
+
+    <!-- CTA PRINCIPAL -->
+    <div class="cta-area">
+
+        <a
+            id="whatsapp"
+            class="primary-button hidden"
+            href="#"
+            target="_blank"
+        >
             💬 Contactar por WhatsApp
         </a>
 
-        <a id="call" class="button hidden">
-            📞 Llamar ahora
-        </a>
-
-        <a id="instagram" class="button hidden" target="_blank">
-            📸 Instagram
-        </a>
-
-        <a id="maps" class="button hidden" target="_blank">
-            📍 Cómo llegar
-        </a>
-
-        <a id="website" class="button hidden" target="_blank">
-            🌐 Sitio web
-        </a>
-
-        <div id="qr-container">
-
-            <p>Escanea para ver este perfil</p>
-
-            <img
-                id="qr-code"
-                alt="Código QR"
-            >
-
-            <a
-                id="download-qr"
-                class="button"
-                target="_blank"
-                style="margin-top:18px;"
-            >
-                📥 Descargar QR
-            </a>
-
-        </div>
-
     </div>
 
+
+    <main class="content">
+
+        <!-- OFERTA -->
+        <section class="section">
+
+            <div class="offer">
+
+                <div class="offer-label">
+                    Atención personalizada
+                </div>
+
+                <h2>
+                    Descubre lo que tenemos para ti
+                </h2>
+
+                <p>
+                    Conoce nuestros servicios y ponte en contacto
+                    directamente con nuestro equipo.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- INFORMACIÓN -->
+        <section class="section">
+
+            <h2 class="section-title">
+                Información
+            </h2>
+
+            <div class="card">
+
+                <div class="info-grid">
+
+                    <div class="info-item">
+                        <div class="info-icon">📍</div>
+
+                        <div class="info-text">
+                            <strong>Dirección</strong>
+                            <span id="address"></span>
+                        </div>
+                    </div>
+
+
+                    <div class="info-item">
+                        <div class="info-icon">📞</div>
+
+                        <div class="info-text">
+                            <strong>Teléfono</strong>
+                            <span id="phone"></span>
+                        </div>
+                    </div>
+
+
+                    <div class="info-item">
+                        <div class="info-icon">🕐</div>
+
+                        <div class="info-text">
+                            <strong>Horarios</strong>
+                            <span id="hours"></span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ACCIONES -->
+        <section class="section">
+
+            <h2 class="section-title">
+                ¿Qué necesitas?
+            </h2>
+
+            <div class="actions">
+
+                <a
+                    id="call"
+                    class="action primary hidden"
+                    href="#"
+                >
+                    📞 Llamar ahora
+                </a>
+
+
+                <a
+                    id="maps"
+                    class="action hidden"
+                    href="#"
+                    target="_blank"
+                >
+                    📍 Cómo llegar
+                </a>
+
+
+                <a
+                    id="instagram"
+                    class="action hidden"
+                    href="#"
+                    target="_blank"
+                >
+                    📸 Ver Instagram
+                </a>
+
+
+                <a
+                    id="website"
+                    class="action hidden"
+                    href="#"
+                    target="_blank"
+                >
+                    🌐 Visitar sitio web
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- QR -->
+        <section class="section">
+
+            <div class="card qr-card">
+
+                <h2 class="section-title">
+                    Comparte este perfil
+                </h2>
+
+                <p>
+                    Escanea el código QR para volver a esta página
+                    cuando quieras.
+                </p>
+
+                <img
+                    id="qr-code"
+                    class="qr-code"
+                    alt="Código QR"
+                >
+
+                <a
+                    id="download-qr"
+                    class="download"
+                    href="#"
+                    target="_blank"
+                >
+                    📥 Descargar código QR
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer class="footer">
+        Perfil digital
+    </footer>
+
 </div>
+
 
 <script>
 
@@ -212,19 +553,23 @@ const SUPABASE_URL =
 const SUPABASE_ANON_KEY =
     "sb_publishable_jh7Ytp-pUWZvI9isV_-Sbg_aTbY4Qfq";
 
+
 const supabaseClient =
     supabase.createClient(
         SUPABASE_URL,
         SUPABASE_ANON_KEY
     );
 
+
 const pathParts =
     window.location.pathname
         .split("/")
         .filter(Boolean);
 
+
 const slug =
     pathParts[pathParts.length - 1];
+
 
 async function loadBusiness() {
 
@@ -235,6 +580,7 @@ async function loadBusiness() {
             .eq("slug", slug)
             .eq("is_published", true)
             .single();
+
 
     if (error || !data) {
 
@@ -247,38 +593,55 @@ async function loadBusiness() {
         return;
     }
 
+
+    /* DATOS PRINCIPALES */
+
     document.title =
-        data.name || "Perfil de negocio";
+        data.name ||
+        "Perfil de negocio";
+
 
     document.getElementById("name")
         .textContent =
         data.name || "";
 
+
     document.getElementById("description")
         .textContent =
         data.description || "";
+
 
     document.getElementById("category")
         .textContent =
         data.category || "";
 
+
     document.getElementById("address")
         .textContent =
-        data.address || "";
+        data.address || "No informado";
+
 
     document.getElementById("phone")
         .textContent =
-        data.phone || "";
+        data.phone || "No informado";
+
 
     document.getElementById("hours")
         .textContent =
-        data.opening_hours || "";
+        data.opening_hours || "Consultar";
 
-    document.documentElement.style
+
+    /* COLOR */
+
+    document.documentElement
+        .style
         .setProperty(
             "--primary-color",
             data.primary_color || "#111111"
         );
+
+
+    /* LOGO */
 
     if (data.logo_url) {
 
@@ -290,6 +653,9 @@ async function loadBusiness() {
 
         logo.classList.remove("hidden");
     }
+
+
+    /* WHATSAPP */
 
     if (data.whatsapp) {
 
@@ -307,6 +673,9 @@ async function loadBusiness() {
         whatsapp.classList.remove("hidden");
     }
 
+
+    /* TELÉFONO */
+
     if (data.phone) {
 
         const call =
@@ -319,6 +688,9 @@ async function loadBusiness() {
         call.classList.remove("hidden");
     }
 
+
+    /* INSTAGRAM */
+
     if (data.instagram) {
 
         const instagram =
@@ -329,6 +701,9 @@ async function loadBusiness() {
 
         instagram.classList.remove("hidden");
     }
+
+
+    /* MAPS */
 
     if (data.maps_url) {
 
@@ -341,6 +716,9 @@ async function loadBusiness() {
         maps.classList.remove("hidden");
     }
 
+
+    /* WEBSITE */
+
     if (data.website) {
 
         const website =
@@ -352,26 +730,37 @@ async function loadBusiness() {
         website.classList.remove("hidden");
     }
 
+
+    /* QR */
+
     const currentUrl =
-        window.location.href.split("?")[0];
+        window.location.href
+            .split("?")[0];
+
 
     const qrUrl =
         "https://quickchart.io/qr?text=" +
         encodeURIComponent(currentUrl) +
         "&size=500";
 
+
     const qrCode =
         document.getElementById("qr-code");
+
 
     qrCode.src =
         qrUrl;
 
+
     const downloadQr =
         document.getElementById("download-qr");
 
+
     downloadQr.href =
         qrUrl;
+
 }
+
 
 loadBusiness();
 
