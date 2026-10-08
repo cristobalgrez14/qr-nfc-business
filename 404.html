@@ -33,9 +33,14 @@ html{
 body{
     margin:0;
     font-family:Arial,Helvetica,sans-serif;
-    background:var(--bg);
-    color:var(--text);
-}
+    background:
+    radial-gradient(
+        circle at top,
+        var(--theme-card) 0%,
+        var(--theme-background) 55%,
+        var(--theme-background) 100%
+    );
+    color: var(--theme-text);
 
 .page{
     max-width:720px;
@@ -480,7 +485,7 @@ body{
 ========================= */
 
 .card{
-    background:#fff;
+    background: var(--theme-card);
 
     border:
         1px solid
@@ -568,9 +573,9 @@ body{
         1px solid
         var(--border);
 
-    background:#fff;
+    background:var(--primary-color);
 
-    color:var(--text);
+color:var(--accent-color);
 
     text-decoration:none;
 
@@ -1057,7 +1062,97 @@ const pathParts =
     window.location.pathname
         .split("/")
         .filter(Boolean);
+const THEMES = {
+    general: {
+        primary: "#111111",
+        accent: "#ffffff",
+        background: "#0b0b0b",
+        card: "#151515",
+        text: "#ffffff",
+        muted: "#a1a1aa",
+        badge: "Perfil digital"
+    },
 
+    barber: {
+        primary: "#111111",
+        accent: "#d4af37",
+        background: "#080808",
+        card: "#151515",
+        text: "#ffffff",
+        muted: "#b5b5b5",
+        badge: "Barbería premium"
+    },
+
+    cafe: {
+        primary: "#6F4E37",
+        accent: "#f3d7b5",
+        background: "#211710",
+        card: "#302118",
+        text: "#fff8f0",
+        muted: "#d5c0ad",
+        badge: "Café de especialidad"
+    },
+
+    restaurant: {
+        primary: "#8b1e1e",
+        accent: "#f4d58d",
+        background: "#130909",
+        card: "#241010",
+        text: "#fffaf0",
+        muted: "#d4c1b8",
+        badge: "Experiencia gastronómica"
+    },
+
+    beauty: {
+        primary: "#9b5c72",
+        accent: "#f6d9e3",
+        background: "#1b1015",
+        card: "#29171f",
+        text: "#fff7fa",
+        muted: "#d8bfc8",
+        badge: "Belleza & cuidado"
+    },
+
+    gym: {
+        primary: "#c62828",
+        accent: "#ffffff",
+        background: "#090909",
+        card: "#171717",
+        text: "#ffffff",
+        muted: "#bdbdbd",
+        badge: "Entrenamiento"
+    },
+
+    professional: {
+        primary: "#174a7e",
+        accent: "#dbeafe",
+        background: "#07111d",
+        card: "#101e2d",
+        text: "#f8fbff",
+        muted: "#aebdcd",
+        badge: "Servicios profesionales"
+    },
+
+    store: {
+        primary: "#5b3a8e",
+        accent: "#eadcff",
+        background: "#100b17",
+        card: "#1c1327",
+        text: "#ffffff",
+        muted: "#c8bdd1",
+        badge: "Tienda"
+    },
+
+    pets: {
+        primary: "#28745a",
+        accent: "#d8f3e6",
+        background: "#081510",
+        card: "#10251d",
+        text: "#f5fff9",
+        muted: "#b7cfc3",
+        badge: "Mascotas"
+    }
+};
 
 const slug =
     pathParts[pathParts.length - 1];
@@ -1125,13 +1220,45 @@ async function loadBusiness(){
        COLOR
     ===================== */
 
-    document.documentElement
-        .style
-        .setProperty(
-            "--primary-color",
-            data.primary_color ||
-            "#111111"
-        );
+    const theme =
+    THEMES[data.template_type] || THEMES.general;
+
+document.documentElement.style.setProperty(
+    "--primary-color",
+    data.primary_color || theme.primary
+);
+
+document.documentElement.style.setProperty(
+    "--accent-color",
+    theme.accent
+);
+
+document.documentElement.style.setProperty(
+    "--theme-background",
+    theme.background
+);
+
+document.documentElement.style.setProperty(
+    "--theme-card",
+    theme.card
+);
+
+document.documentElement.style.setProperty(
+    "--theme-text",
+    theme.text
+);
+
+document.documentElement.style.setProperty(
+    "--theme-muted",
+    theme.muted
+);
+const categoryElement =
+    document.getElementById("category");
+
+if (categoryElement) {
+    categoryElement.textContent =
+        data.category || theme.badge;
+}
 
 
     /* =====================
