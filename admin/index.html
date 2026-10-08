@@ -199,6 +199,97 @@ const businessSlug =
 
 console.log("Negocio seleccionado:", businessSlug);
 
+
+async function loadBusiness(){
+
+    try {
+
+        const { data, error } = await supabaseClient
+            .from("businesses")
+            .select(`
+                id,
+                name,
+                slug,
+                description,
+                phone,
+                address,
+                category,
+                opening_hours,
+                is_published
+            `)
+            .eq("slug", businessSlug)
+            .eq("is_published", true)
+            .single();
+
+
+        if(error){
+
+            console.error(
+                "Error cargando negocio:",
+                error
+            );
+
+            return;
+        }
+
+
+        if(!data){
+
+            console.error(
+                "Negocio no encontrado"
+            );
+
+            return;
+        }
+
+
+        console.log(
+            "Negocio cargado correctamente:",
+            data
+        );
+
+
+        const businessName =
+            document.querySelector(".hero h1");
+
+        if(businessName){
+
+            businessName.textContent =
+                `Panel de ${data.name}`;
+
+        }
+
+
+        const heroDescription =
+            document.querySelector(".hero p");
+
+        if(heroDescription){
+
+            heroDescription.textContent =
+                data.description ||
+                "Gestiona tu perfil digital desde este panel.";
+
+        }
+
+
+        document.title =
+            `Admin | ${data.name}`;
+
+
+    } catch(error){
+
+        console.error(
+            "Error inesperado:",
+            error
+        );
+
+    }
+
+}
+
+
+loadBusiness();
+
 </script>
 <body>
 
