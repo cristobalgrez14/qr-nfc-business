@@ -1057,7 +1057,61 @@ const pathParts =
     window.location.pathname
         .split("/")
         .filter(Boolean);
+const THEMES = {
+    general: {
+        primary: "#111111",
+        accent: "#ffffff",
+        badge: "Perfil digital"
+    },
 
+    barber: {
+        primary: "#111111",
+        accent: "#d4af37",
+        badge: "Barbería premium"
+    },
+
+    cafe: {
+        primary: "#6F4E37",
+        accent: "#f3d7b5",
+        badge: "Café de especialidad"
+    },
+
+    restaurant: {
+        primary: "#8b1e1e",
+        accent: "#f4d58d",
+        badge: "Experiencia gastronómica"
+    },
+
+    beauty: {
+        primary: "#9b5c72",
+        accent: "#f6d9e3",
+        badge: "Belleza & cuidado"
+    },
+
+    gym: {
+        primary: "#c62828",
+        accent: "#ffffff",
+        badge: "Entrenamiento"
+    },
+
+    professional: {
+        primary: "#174a7e",
+        accent: "#dbeafe",
+        badge: "Servicios profesionales"
+    },
+
+    store: {
+        primary: "#5b3a8e",
+        accent: "#eadcff",
+        badge: "Tienda"
+    },
+
+    pets: {
+        primary: "#28745a",
+        accent: "#d8f3e6",
+        badge: "Mascotas"
+    }
+};
 
 const slug =
     pathParts[pathParts.length - 1];
@@ -1125,13 +1179,26 @@ async function loadBusiness(){
        COLOR
     ===================== */
 
-    document.documentElement
-        .style
-        .setProperty(
-            "--primary-color",
-            data.primary_color ||
-            "#111111"
-        );
+    const theme =
+    THEMES[data.template_type] || THEMES.general;
+
+document.documentElement.style.setProperty(
+    "--primary-color",
+    data.primary_color || theme.primary
+);
+
+document.documentElement.style.setProperty(
+    "--accent-color",
+    theme.accent
+);
+
+const categoryElement =
+    document.getElementById("category");
+
+if (categoryElement) {
+    categoryElement.textContent =
+        data.category || theme.badge;
+}
 
 
     /* =====================
