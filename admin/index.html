@@ -176,8 +176,20 @@ footer{
 }
 
 </style>
-</head>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head> 
+    <script>
+const SUPABASE_URL = "https://ktguetjvnhcylybxfjto.supabase.co";
+
+const SUPABASE_KEY = "sb_publishable_jh7Ytp-pUWZvI9isV_-Sbg_aTbY4Qfq";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+</script>
 <body>
 
 <header>
