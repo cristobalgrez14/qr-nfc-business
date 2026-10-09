@@ -386,6 +386,45 @@ async function verifyMembership(user) {
     return true;
 }
 
+document.getElementById("resetPasswordButton")
+    .addEventListener("click", async () => {
+        const email = document
+            .getElementById("loginEmail")
+            .value.trim();
+
+        const resetResult = document.getElementById("resetResult");
+
+        if (!email) {
+            resetResult.textContent =
+                "Escribe tu correo electrónico primero.";
+            return;
+        }
+
+        const button = document.getElementById("resetPasswordButton");
+        button.disabled = true;
+        resetResult.textContent = "Enviando solicitud…";
+
+        try {
+            const { error } = await client.auth.resetPasswordForEmail(
+                email,
+                {
+                    redirectTo:
+                        "https://cristobalgrez14.github.io/qr-nfc-business/admin/mi-negocio.html?slug=barberia-premium"
+                }
+            );
+
+            if (error) throw error;
+
+            resetResult.textContent =
+                "Si el correo está registrado y la recuperación está configurada, recibirás un mensaje con las instrucciones.";
+        } catch (error) {
+            console.error("Error de recuperación:", error);
+            resetResult.textContent =
+                "No se pudo enviar la solicitud. Revisa la configuración de Auth en Supabase.";
+        } finally {
+            button.disabled = false;
+        }
+    });
 loginButton.addEventListener("click", async () => {
     const email = document.getElementById("loginEmail").value.trim();
     const password = document.getElementById("loginPassword").value;
