@@ -1,0 +1,226 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi negocio | QR NFC Business</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+    margin:0;
+    background:#0b0b0b;
+    color:#fff;
+    font-family:Arial,Helvetica,sans-serif;
+}
+.container{
+    max-width:900px;
+    margin:auto;
+    padding:28px 18px 60px;
+}
+.back{
+    display:inline-block;
+    color:#ccc;
+    text-decoration:none;
+    margin-bottom:25px;
+}
+header{margin-bottom:28px}
+header span{
+    color:#aaa;
+    font-size:12px;
+    letter-spacing:1.5px;
+}
+h1{font-size:32px;margin:10px 0}
+header p,.hint{color:#aaa;line-height:1.6}
+.panel{
+    background:#151515;
+    border:1px solid #292929;
+    border-radius:20px;
+    padding:24px;
+    margin-bottom:20px;
+}
+h2{font-size:19px;margin-top:0}
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+}
+.field{margin-bottom:17px}
+label{
+    display:block;
+    color:#ddd;
+    font-size:13px;
+    margin-bottom:8px;
+}
+input,textarea,select{
+    width:100%;
+    padding:13px;
+    background:#0d0d0d;
+    color:#fff;
+    border:1px solid #383838;
+    border-radius:10px;
+    font:inherit;
+}
+textarea{min-height:105px;resize:vertical}
+.full{grid-column:1/-1}
+button{
+    border:0;
+    border-radius:11px;
+    padding:14px 20px;
+    background:#d4af37;
+    color:#111;
+    font-weight:bold;
+    cursor:pointer;
+}
+button:disabled{opacity:.5;cursor:not-allowed}
+.notice{
+    background:#202018;
+    border:1px solid #504726;
+    padding:14px;
+    border-radius:12px;
+    color:#e8dcae;
+    font-size:13px;
+    line-height:1.6;
+}
+#result{margin-top:18px;line-height:1.6}
+@media(max-width:600px){
+    .grid{grid-template-columns:1fr}
+    .full{grid-column:auto}
+    .panel{padding:18px}
+}
+</style>
+</head>
+
+<body>
+<main class="container">
+
+<a class="back" id="backLink" href="./">← Volver al panel</a>
+
+<header>
+    <span>QR NFC BUSINESS</span>
+    <h1>Mi negocio</h1>
+    <p>Administra la información que aparece en tu perfil digital.</p>
+</header>
+
+<div class="notice">
+    <strong>Modo de configuración.</strong>
+    Este formulario todavía no guarda cambios en Supabase.
+    Primero debemos activar el acceso autenticado para evitar que
+    personas no autorizadas modifiquen los negocios.
+</div>
+
+<form id="businessForm">
+
+<section class="panel">
+    <h2>Información principal</h2>
+
+    <div class="grid">
+        <div class="field">
+            <label for="name">Nombre del negocio</label>
+            <input id="name" name="name" maxlength="120" required>
+        </div>
+
+        <div class="field">
+            <label for="category">Categoría</label>
+            <input id="category" name="category" maxlength="100">
+        </div>
+
+        <div class="field full">
+            <label for="description">Descripción</label>
+            <textarea id="description" name="description"
+                maxlength="2000"></textarea>
+        </div>
+    </div>
+</section>
+
+<section class="panel">
+    <h2>Contacto y ubicación</h2>
+
+    <div class="grid">
+        <div class="field">
+            <label for="phone">Teléfono</label>
+            <input id="phone" name="phone" type="tel" maxlength="40">
+        </div>
+
+        <div class="field">
+            <label for="whatsapp">WhatsApp (código de país incluido)</label>
+            <input id="whatsapp" name="whatsapp" type="tel" maxlength="40">
+        </div>
+
+        <div class="field full">
+            <label for="address">Dirección</label>
+            <input id="address" name="address" maxlength="250">
+        </div>
+
+        <div class="field full">
+            <label for="maps_url">Enlace de Google Maps</label>
+            <input id="maps_url" name="maps_url" type="url"
+                placeholder="https://maps.google.com/...">
+        </div>
+    </div>
+</section>
+
+<section class="panel">
+    <h2>Redes y horarios</h2>
+
+    <div class="grid">
+        <div class="field">
+            <label for="instagram">Instagram (enlace completo)</label>
+            <input id="instagram" name="instagram" type="url"
+                placeholder="https://instagram.com/tu-negocio">
+        </div>
+
+        <div class="field">
+            <label for="website">Sitio web</label>
+            <input id="website" name="website" type="url"
+                placeholder="https://tusitio.cl">
+        </div>
+
+        <div class="field full">
+            <label for="opening_hours">Horarios de atención</label>
+            <textarea id="opening_hours" name="opening_hours"
+                maxlength="500"
+                placeholder="Lun-Sáb: 10:00–20:00"></textarea>
+        </div>
+    </div>
+</section>
+
+<section class="panel">
+    <h2>Estado del perfil</h2>
+
+    <div class="field">
+        <label for="is_published">Estado actual</label>
+        <input id="is_published" disabled value="Se comprobará al conectar el sistema">
+    </div>
+
+    <p class="hint">
+        La dirección de tu perfil y su estado de publicación se administrarán
+        por separado para evitar cambios accidentales.
+    </p>
+
+    <button type="submit" disabled>
+        Guardar cambios (pendiente de activar acceso seguro)
+    </button>
+
+    <div id="result" role="status" aria-live="polite"></div>
+</section>
+
+</form>
+</main>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const slug = params.get("slug") || "demo-automatico";
+
+document.getElementById("backLink").href =
+    "./?slug=" + encodeURIComponent(slug);
+
+document.getElementById("businessForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+    document.getElementById("result").textContent =
+        "El guardado todavía no está habilitado. Primero configuraremos el acceso seguro.";
+});
+</script>
+</body>
+</html>
