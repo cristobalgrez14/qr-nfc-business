@@ -243,43 +243,53 @@ button:disabled{opacity:.5;cursor:not-allowed}
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
 const SUPABASE_URL = "https://ktguetjvnhcylybxfjto.supabase.co";
-
-/*
-  Pega aquí la misma clave pública que ya utilizas
-  en admin/index.html. No compartas esa clave en el chat.
-*/
 const SUPABASE_KEY = "sb_publishable_jh7Ytp-pUWZvI9isV_-Sbg_aTbY4Qfq";
+
+const client = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
 
 const params = new URLSearchParams(window.location.search);
 const slug = params.get("slug") || "demo-automatico";
 
+const form = document.getElementById("businessForm");
+const result = document.getElementById("result");
+const loginResult = document.getElementById("loginResult");
+const loginPanel = document.getElementById("loginPanel");
+const loginButton = document.getElementById("loginButton");
+
 document.getElementById("backLink").href =
     "./?slug=" + encodeURIComponent(slug);
 
-const result = document.getElementById("result");
-const form = document.getElementById("businessForm");
+const editableFields = [
+    "name",
+    "category",
+    "description",
+    "phone",
+    "whatsapp",
+    "address",
+    "maps_url",
+    "instagram",
+    "website",
+    "opening_hours"
+];
+
+function setEditingEnabled(enabled) {
+    editableFields.forEach((id) => {
+        document.getElementById(id).disabled = !enabled;
+    });
+}
 
 async function loadBusiness() {
     try {
-        if (
-            !SUPABASE_KEY ||
-            SUPABASE_KEY === "PEGA_AQUI_TU_CLAVE_PUBLICA_ACTUAL"
-        ) {
-            result.textContent =
-                "Falta configurar la clave pública de Supabase.";
-            return;
-        }
-
-        const client = window.supabase.createClient(
-            SUPABASE_URL,
-            SUPABASE_KEY
-        );
-
         const { data, error } = await client
             .from("businesses")
             .select(`
+                id,
                 name,
                 slug,
                 description,
@@ -301,48 +311,129 @@ async function loadBusiness() {
 
         if (!data) {
             result.textContent =
-                "No se encontró un negocio publicado con ese enlace.";
-            return;
+                "No se encontró un negocio publicado para este enlace.";
+            return null;
         }
 
-        const fields = [
-            "name",
-            "description",
-            "phone",
-            "whatsapp",
-            "address",
-            "category",
-            "opening_hours",
-            "instagram",
-            "website",
-            "maps_url"
-        ];
-
-        fields.forEach((field) => {
-            const input = document.getElementById(field);
-            if (input) input.value = data[field] || "";
+        editableFields.forEach((field) => {
+            document.getElementById(field).value =
+                data[field] || "";
         });
 
         document.getElementById("is_published").value =
             data.is_published ? "Publicado" : "No publicado";
 
         document.title = "Mi negocio | " + data.name;
+
         result.textContent =
-            "Datos cargados correctamente: " + data.name + ".";
+            "Datos cargados: " + data.name +
+            ". Inicia sesión para comprobar tus permisos.";
+
+        return data;
     } catch (error) {
         console.error("Error al cargar el negocio:", error);
         result.textContent =
-            "No se pudieron cargar los datos. Revisa la consola del navegador.";
+            "No se pudieron cargar los datos del negocio.";
+        return null;
     }
 }
 
-form.addEventListener("submit", function(event) {
-    event.preventDefault();
-    result.textContent =
-        "Los datos se han cargado, pero el guardado sigue desactivado hasta configurar el acceso seguro.";
+async function verifyMembership(user) {
+    setEditingEnabled(false);
+
+    const business = await loadBusiness();
+
+    if (!business) {
+        loginResult.textContent =
+            "No se pudo comprobar el negocio.";
+        return false;
+    }
+
+    const { data: membership, error } = await client
+        .from("business_members")
+        .select("business_id, role")
+        .eq("business_id", business.id)
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+    if (error) {
+        console.error("Error al comprobar la membresía:", error);
+        loginResult.textContent =
+            "No se pudieron comprobar los permisos. Revisa las políticas de Supabase.";
+        return false;
+    }
+
+    if (
+        !membership ||
+        !["owner", "editor"].includes(membership.role)
+    ) {
+        loginResult.textContent =
+            "Tu cuenta no tiene permisos para editar este negocio.";
+        return false;
+    }
+
+    loginResult.textContent =
+        "Sesión iniciada y permisos verificados. El guardado aún no está activado.";
+
+    setEditingEnabled(true);
+    loginButton.textContent = "Sesión verificada";
+
+    return true;
+}
+
+loginButton.addEventListener("click", async () => {
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value;
+
+    if (!email || !password) {
+        loginResult.textContent =
+            "Introduce tu correo y contraseña.";
+        return;
+    }
+
+    loginButton.disabled = true;
+    loginResult.textContent = "Verificando acceso…";
+
+    try {
+        const { data, error } = await client.auth.signInWithPassword({
+            email,
+            password
+        });
+
+        if (error) throw error;
+
+        await verifyMembership(data.user);
+    } catch (error) {
+        console.error("Error al iniciar sesión:", error);
+        loginResult.textContent =
+            "No se pudo iniciar sesión. Comprueba el correo y la contraseña.";
+    } finally {
+        loginButton.disabled = false;
+    }
 });
 
+form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    result.textContent =
+        "El guardado todavía no está activado. Tus datos no se han modificado.";
+});
+
+setEditingEnabled(false);
 loadBusiness();
+
+client.auth.getSession().then(({ data, error }) => {
+    if (error) {
+        console.error("Error al recuperar la sesión:", error);
+        return;
+    }
+
+    if (data.session) {
+        document.getElementById("loginEmail").value =
+            data.session.user.email || "";
+
+        verifyMembership(data.session.user);
+    }
+});
 </script>
 </body>
 </html>
