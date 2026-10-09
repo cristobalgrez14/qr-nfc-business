@@ -110,6 +110,38 @@ button:disabled{opacity:.5;cursor:not-allowed}
     personas no autorizadas modifiquen los negocios.
 </div>
 
+<section class="panel" id="loginPanel">
+    <h2>Acceso del propietario</h2>
+    <p class="hint">
+        Inicia sesión para administrar la información de tu negocio.
+    </p>
+
+    <div class="field">
+        <label for="loginEmail">Correo electrónico</label>
+        <input
+            id="loginEmail"
+            type="email"
+            autocomplete="username"
+            required
+        >
+    </div>
+
+    <div class="field">
+        <label for="loginPassword">Contraseña</label>
+        <input
+            id="loginPassword"
+            type="password"
+            autocomplete="current-password"
+            required
+        >
+    </div>
+
+    <button type="button" id="loginButton">
+        Iniciar sesión
+    </button>
+
+    <div id="loginResult" role="status" aria-live="polite"></div>
+</section>
 <form id="businessForm">
 
 <section class="panel">
