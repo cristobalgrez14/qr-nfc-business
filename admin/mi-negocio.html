@@ -209,18 +209,108 @@ button:disabled{opacity:.5;cursor:not-allowed}
 </form>
 </main>
 
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+const SUPABASE_URL = "https://ktguetjvnhcylybxfjto.supabase.co";
+
+/*
+  Pega aquí la misma clave pública que ya utilizas
+  en admin/index.html. No compartas esa clave en el chat.
+*/
+const SUPABASE_KEY = "PEGA_AQUI_TU_CLAVE_PUBLICA_ACTUAL";
+
 const params = new URLSearchParams(window.location.search);
 const slug = params.get("slug") || "demo-automatico";
 
 document.getElementById("backLink").href =
     "./?slug=" + encodeURIComponent(slug);
 
-document.getElementById("businessForm").addEventListener("submit", function(event) {
+const result = document.getElementById("result");
+const form = document.getElementById("businessForm");
+
+async function loadBusiness() {
+    try {
+        if (
+            !SUPABASE_KEY ||
+            SUPABASE_KEY === "PEGA_AQUI_TU_CLAVE_PUBLICA_ACTUAL"
+        ) {
+            result.textContent =
+                "Falta configurar la clave pública de Supabase.";
+            return;
+        }
+
+        const client = window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
+
+        const { data, error } = await client
+            .from("businesses")
+            .select(`
+                name,
+                slug,
+                description,
+                phone,
+                whatsapp,
+                address,
+                category,
+                opening_hours,
+                instagram,
+                website,
+                maps_url,
+                is_published
+            `)
+            .eq("slug", slug)
+            .eq("is_published", true)
+            .maybeSingle();
+
+        if (error) throw error;
+
+        if (!data) {
+            result.textContent =
+                "No se encontró un negocio publicado con ese enlace.";
+            return;
+        }
+
+        const fields = [
+            "name",
+            "description",
+            "phone",
+            "whatsapp",
+            "address",
+            "category",
+            "opening_hours",
+            "instagram",
+            "website",
+            "maps_url"
+        ];
+
+        fields.forEach((field) => {
+            const input = document.getElementById(field);
+            if (input) input.value = data[field] || "";
+        });
+
+        document.getElementById("is_published").value =
+            data.is_published ? "Publicado" : "No publicado";
+
+        document.title = "Mi negocio | " + data.name;
+        result.textContent =
+            "Datos cargados correctamente: " + data.name + ".";
+    } catch (error) {
+        console.error("Error al cargar el negocio:", error);
+        result.textContent =
+            "No se pudieron cargar los datos. Revisa la consola del navegador.";
+    }
+}
+
+form.addEventListener("submit", function(event) {
     event.preventDefault();
-    document.getElementById("result").textContent =
-        "El guardado todavía no está habilitado. Primero configuraremos el acceso seguro.";
+    result.textContent =
+        "Los datos se han cargado, pero el guardado sigue desactivado hasta configurar el acceso seguro.";
 });
+
+loadBusiness();
 </script>
 </body>
 </html>
