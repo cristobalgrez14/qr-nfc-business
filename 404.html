@@ -939,16 +939,26 @@ function setLink(id,url){
 }
 
 
+
 /* SLUG */
 
-const pathParts =
-    window.location.pathname
-        .split("/")
-        .filter(Boolean);
+const pathParts = window.location.pathname
+    .split("/")
+    .filter(Boolean);
+
+const urlParams = new URLSearchParams(window.location.search);
+
+const lastPart = pathParts[pathParts.length - 1] || "";
+
+const reservedPaths = ["qr-nfc-business", "templates", "business"];
+
+const slugFromPath = reservedPaths.includes(lastPart)
+    ? ""
+    : lastPart;
 
 const slug =
-    pathParts[pathParts.length - 1];
-
+    urlParams.get("slug") ||
+    slugFromPath;
 
 /* LOAD */
 
