@@ -619,6 +619,141 @@ body.template-barber {
         grid-column: 1 / -1;
     }
 }
+/* =========================
+   BARBERIA PREMIUM
+   ========================= */
+
+body.template-barber {
+    background: #090909;
+    color: #f5f1e8;
+    font-family: Arial, sans-serif;
+}
+
+.template-barber .page {
+    max-width: 1240px;
+    padding: 24px;
+}
+
+.template-barber .hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: 620px;
+    align-items: flex-start;
+    justify-content: flex-end;
+    text-align: left;
+    padding: 65px clamp(24px, 6vw, 80px);
+    border: 1px solid rgba(212, 175, 55, .3);
+    border-radius: 6px;
+    background:
+        linear-gradient(90deg,
+            rgba(0,0,0,.95) 0%,
+            rgba(0,0,0,.75) 48%,
+            rgba(0,0,0,.15) 100%),
+        #171717;
+}
+
+.template-barber .hero h1 {
+    max-width: 760px;
+    font-size: clamp(44px, 7vw, 84px);
+    line-height: 1;
+    letter-spacing: -2px;
+    text-transform: uppercase;
+}
+
+.template-barber .hero-description {
+    max-width: 560px;
+    color: #d0ccc4;
+    line-height: 1.7;
+}
+
+.template-barber .badge,
+.template-barber .eyebrow {
+    color: #e6c36a;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.template-barber .action {
+    background: linear-gradient(135deg, #f4d58a, #c99a36);
+    color: #111;
+    border: 1px solid #d4af37;
+    border-radius: 4px;
+    min-height: 50px;
+    font-weight: 700;
+}
+
+.template-barber .action.secondary {
+    background: transparent;
+    color: #fff;
+    border-color: #777;
+}
+
+.template-barber .trust {
+    border-bottom: 1px solid rgba(212,175,55,.25);
+    padding: 24px 10px;
+}
+
+.template-barber .section {
+    margin: 75px 0;
+}
+
+.template-barber .section h2 {
+    font-size: clamp(30px, 4vw, 48px);
+}
+
+.template-barber .card {
+    background: linear-gradient(145deg, #1c1c1c, #101010);
+    border: 1px solid #333;
+    border-radius: 6px;
+    box-shadow: none;
+}
+
+.template-barber .service {
+    padding: 25px;
+    min-height: 210px;
+}
+
+.template-barber .price {
+    color: #e6c36a;
+}
+
+.template-barber .gallery-item {
+    border: 1px solid #333;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.template-barber .final-cta {
+    background: linear-gradient(120deg, #211b10, #101010);
+    border: 1px solid rgba(212,175,55,.4);
+    border-radius: 6px;
+}
+
+.template-barber footer {
+    border-top: 1px solid rgba(212,175,55,.25);
+}
+
+@media (max-width: 700px) {
+    .template-barber .page {
+        padding: 12px;
+    }
+
+    .template-barber .hero {
+        min-height: 540px;
+        padding: 32px 20px;
+    }
+
+    .template-barber .hero h1 {
+        font-size: clamp(40px, 11vw, 60px);
+        letter-spacing: -1px;
+    }
+
+    .template-barber .section {
+        margin: 48px 0;
+    }
+}
+
 /* RESPONSIVE */
 
 @media(max-width:800px){
