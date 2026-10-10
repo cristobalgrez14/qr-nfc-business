@@ -1156,9 +1156,42 @@ async function loadBusiness(){
 
     /* THEME */
 
-    const theme =
-        THEMES[data.template_type]
-        || THEMES.general;
+    
+/* PLANTILLA Y TEMA DEL NEGOCIO */
+
+function detectTemplate(data) {
+    const type = String(data.template_type || "").toLowerCase();
+    const category = String(data.category || "").toLowerCase();
+    const value = type + " " + category;
+
+    if (value.includes("barber") || value.includes("peluquer")) {
+        return "barber";
+    }
+
+    if (value.includes("cafe") || value.includes("café") ||
+        value.includes("cafeter")) {
+        return "cafe";
+    }
+
+    if (value.includes("restaurant") || value.includes("restaurante") ||
+        value.includes("gastronom")) {
+        return "restaurant";
+    }
+
+    if (value.includes("beauty") || value.includes("belleza") ||
+        value.includes("estetica") || value.includes("estética") ||
+        value.includes("cosmetic")) {
+        return "beauty";
+    }
+
+    return "general";
+}
+
+const templateType = detectTemplate(data);
+
+document.body.classList.add("template-" + templateType);
+
+const theme = THEMES[templateType] || THEMES.general;
 
 
     document.documentElement.style.setProperty(
