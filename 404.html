@@ -1,24 +1,387 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta name="theme-color" content="#111111">
 <title>Perfil digital</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-/* =========================================
-   PLANTILLAS VISUALES DIFERENCIADAS
-   ========================================= */
+<style>
+:root {
+    --primary-color: #111111;
+    --accent-color: #ffffff;
+    --theme-background: #0b0b0b;
+    --theme-card: #151515;
+    --theme-text: #ffffff;
+    --theme-muted: #a1a1aa;
+    --border: rgba(255,255,255,.10);
+}
 
-/* BARBERÍA: editorial masculino, negro y dorado */
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--theme-text);
+    background: radial-gradient(circle at top, var(--theme-card), var(--theme-background) 55%);
+    min-height: 100vh;
+}
+
+a { color: inherit; }
+.hidden { display: none !important; }
+
+.page {
+    width: 100%;
+    max-width: 1100px;
+    margin: auto;
+    padding: 20px;
+}
+
+/* HERO GENERAL */
+.hero {
+    min-height: 620px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 60px 20px 50px;
+}
+
+.logo {
+    width: 105px;
+    height: 105px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--accent-color);
+    margin-bottom: 24px;
+    box-shadow: 0 15px 50px rgba(0,0,0,.45);
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 9px 15px;
+    border-radius: 999px;
+    background: var(--primary-color);
+    color: var(--accent-color);
+    border: 1px solid var(--accent-color);
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.hero h1 {
+    margin: 0;
+    max-width: 850px;
+    font-size: clamp(42px, 8vw, 78px);
+    line-height: .98;
+    letter-spacing: -3px;
+}
+
+.hero-description {
+    max-width: 680px;
+    margin: 25px auto 30px;
+    color: var(--theme-muted);
+    font-size: 18px;
+    line-height: 1.7;
+    white-space: pre-line;
+}
+
+.hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+}
+
+.action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 55px;
+    padding: 0 25px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background: var(--primary-color);
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: bold;
+    transition: transform .2s, opacity .2s;
+    cursor: pointer;
+}
+
+.action:hover {
+    transform: translateY(-3px);
+    opacity: .9;
+}
+
+.action.secondary {
+    background: transparent;
+    color: var(--theme-text);
+}
+
+/* CONFIANZA */
+.trust {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 25px;
+    margin: 0 auto 60px;
+    color: var(--theme-muted);
+    font-size: 14px;
+}
+
+/* SECCIONES */
+.section { margin: 80px 0; }
+.section-header { margin-bottom: 30px; }
+
+.eyebrow {
+    color: var(--accent-color);
+    font-size: 13px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.section h2 {
+    margin: 8px 0;
+    font-size: clamp(30px, 5vw, 48px);
+    letter-spacing: -1.5px;
+}
+
+.section-subtitle {
+    color: var(--theme-muted);
+    line-height: 1.6;
+}
+
+/* OFERTA */
+.offer {
+    background: linear-gradient(135deg, var(--primary-color), var(--theme-card));
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    padding: 35px;
+    position: relative;
+    overflow: hidden;
+}
+
+.offer:after {
+    content: "";
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    opacity: .06;
+    right: -80px;
+    top: -80px;
+    pointer-events: none;
+}
+
+.offer-content { position: relative; z-index: 2; }
+
+.offer-label {
+    color: var(--accent-color);
+    font-weight: bold;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.offer h3 {
+    font-size: clamp(28px, 5vw, 46px);
+    margin: 12px 0;
+}
+
+.offer p {
+    color: var(--theme-muted);
+    max-width: 650px;
+    line-height: 1.7;
+}
+
+/* SERVICIOS */
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+.card {
+    background: var(--theme-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 12px 35px rgba(0,0,0,.15);
+}
+
+.service {
+    display: flex;
+    flex-direction: column;
+    min-height: 210px;
+}
+
+.service h3 {
+    margin: 0 0 10px;
+    font-size: 21px;
+}
+
+.service p {
+    color: var(--theme-muted);
+    line-height: 1.6;
+    flex: 1;
+    white-space: pre-line;
+}
+
+.price {
+    color: var(--accent-color);
+    font-size: 21px;
+    font-weight: bold;
+}
+
+/* GALERÍA */
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.gallery-item {
+    min-height: 260px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: var(--theme-card);
+    border: 1px solid var(--border);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    min-height: 260px;
+    object-fit: cover;
+    display: block;
+    transition: transform .3s;
+}
+
+.gallery-item:hover img { transform: scale(1.04); }
+
+/* OPINIONES */
+.testimonials {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+.testimonial { min-height: 180px; }
+
+.stars {
+    color: var(--accent-color);
+    letter-spacing: 3px;
+    margin-bottom: 15px;
+}
+
+.testimonial p {
+    line-height: 1.7;
+    color: var(--theme-text);
+}
+
+.author {
+    color: var(--theme-muted);
+    font-size: 14px;
+}
+
+/* INFORMACIÓN */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.info-item {
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+}
+
+.info-icon { font-size: 25px; }
+
+.info-item strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.info-item span {
+    color: var(--theme-muted);
+    line-height: 1.5;
+    white-space: pre-line;
+}
+
+/* LLAMADA A LA ACCIÓN */
+.final-cta {
+    text-align: center;
+    padding: 70px 25px;
+    border-radius: 30px;
+    background: var(--theme-card);
+    border: 1px solid var(--border);
+}
+
+.final-cta h2 {
+    font-size: clamp(32px, 6vw, 55px);
+    margin: 0 0 15px;
+}
+
+.final-cta p {
+    color: var(--theme-muted);
+    max-width: 600px;
+    margin: 0 auto 28px;
+    line-height: 1.7;
+}
+
+/* CÓDIGO QR */
+.qr-section { text-align: center; }
+
+.qr-box {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+}
+
+.qr-box img {
+    width: 240px;
+    height: 240px;
+    padding: 12px;
+    background: white;
+    border-radius: 20px;
+}
+
+.qr-box p { color: var(--theme-muted); margin: 0; }
+
+footer {
+    text-align: center;
+    color: var(--theme-muted);
+    padding: 45px 0 25px;
+    font-size: 13px;
+}
+
+/* ==========================================
+   PLANTILLAS VISUALES DIFERENCIADAS
+   ========================================== */
+
+/* BARBERÍA: negro, dorado y estilo contundente */
+body.template-barber {
+    background: radial-gradient(circle at top, #242019, #080808 60%);
+}
+
 body.template-barber .hero {
     align-items: flex-start;
     text-align: left;
     min-height: 540px;
-    border-bottom: 2px solid var(--accent-color);
     padding: 70px 35px;
+    border-bottom: 2px solid var(--accent-color);
 }
 
 body.template-barber .hero h1 {
@@ -26,6 +389,10 @@ body.template-barber .hero h1 {
     letter-spacing: -2px;
     font-weight: 900;
 }
+
+body.template-barber .hero-description { margin-left: 0; }
+
+body.template-barber .hero-actions { justify-content: flex-start; }
 
 body.template-barber .logo {
     border-radius: 18px;
@@ -45,9 +412,15 @@ body.template-barber .offer {
     border-color: rgba(212,175,55,.35);
 }
 
+body.template-barber .section h2 {
+    text-transform: uppercase;
+    font-weight: 900;
+}
+
 /* CAFETERÍA: cálida, artesanal y editorial */
 body.template-cafe {
     font-family: Georgia, "Times New Roman", serif;
+    background: radial-gradient(circle at top, #493323, #211710 60%);
 }
 
 body.template-cafe .hero {
@@ -57,6 +430,7 @@ body.template-cafe .hero {
     background:
         radial-gradient(circle at 80% 20%, #79583e 0%, transparent 45%),
         linear-gradient(135deg, #302016, #17100c);
+    padding: 55px 30px;
 }
 
 body.template-cafe .hero h1,
@@ -75,11 +449,14 @@ body.template-cafe .card {
     background: #38271d;
 }
 
-body.template-cafe .action {
-    border-radius: 999px;
+body.template-cafe .offer { border-radius: 24px; }
+body.template-cafe .action { border-radius: 999px; }
+
+/* RESTAURANTE: gastronomía elegante */
+body.template-restaurant {
+    background: radial-gradient(ellipse at top, #482020, #130909 65%);
 }
 
-/* RESTAURANTE: experiencia gastronómica */
 body.template-restaurant .hero {
     min-height: 590px;
     border-bottom: 1px solid var(--accent-color);
@@ -101,15 +478,17 @@ body.template-restaurant .offer {
     border-left: 5px solid var(--accent-color);
 }
 
-body.template-restaurant .card {
-    border-radius: 5px;
-}
+body.template-restaurant .card { border-radius: 5px; }
 
 body.template-restaurant .service {
     border-top: 2px solid var(--accent-color);
 }
 
-/* BELLEZA: elegante, suave y luminoso */
+/* BELLEZA: elegante, suave y sofisticada */
+body.template-beauty {
+    background: radial-gradient(circle at top, #39202b, #1b1015 65%);
+}
+
 body.template-beauty .hero {
     min-height: 520px;
     align-items: flex-start;
@@ -128,6 +507,9 @@ body.template-beauty .section h2 {
     letter-spacing: -1.5px;
 }
 
+body.template-beauty .hero-description { margin-left: 0; }
+body.template-beauty .hero-actions { justify-content: flex-start; }
+
 body.template-beauty .logo {
     border-radius: 24px;
     border: 2px solid var(--accent-color);
@@ -140,11 +522,42 @@ body.template-beauty .final-cta {
     border-color: rgba(246,217,227,.3);
 }
 
-body.template-beauty .action {
-    border-radius: 999px;
+body.template-beauty .action { border-radius: 999px; }
+
+/* OTRAS PLANTILLAS */
+body.template-gym .hero h1 {
+    text-transform: uppercase;
+    font-weight: 900;
 }
 
-/* MÓVILES */
+body.template-professional .hero {
+    min-height: 500px;
+}
+
+body.template-store .offer {
+    border-radius: 18px;
+}
+
+body.template-pets .card {
+    border-radius: 28px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 800px) {
+    .services-grid,
+    .testimonials {
+        grid-template-columns: 1fr;
+    }
+
+    .gallery { grid-template-columns: repeat(2, 1fr); }
+    .info-grid { grid-template-columns: 1fr; }
+
+    .hero {
+        min-height: auto;
+        padding-top: 45px;
+    }
+}
+
 @media (max-width: 600px) {
     body.template-barber .hero,
     body.template-beauty .hero {
@@ -158,623 +571,115 @@ body.template-beauty .action {
         padding: 50px 20px;
     }
 }
-<style>
-:root{
-    --primary-color:#111111;
-    --accent-color:#ffffff;
-    --theme-background:#0b0b0b;
-    --theme-card:#151515;
-    --theme-text:#ffffff;
-    --theme-muted:#a1a1aa;
-    --border:rgba(255,255,255,.10);
-}
 
-*{
-    box-sizing:border-box;
-}
+@media (max-width: 500px) {
+    .page { padding: 12px; }
 
-html{
-    scroll-behavior:smooth;
-}
+    .hero { padding: 45px 10px; }
 
-body{
-    margin:0;
-    font-family:Arial,Helvetica,sans-serif;
-    color:var(--theme-text);
-
-    background:
-        radial-gradient(
-            circle at top,
-            var(--theme-card) 0%,
-            var(--theme-background) 48%,
-            var(--theme-background) 100%
-        );
-
-    min-height:100vh;
-}
-
-a{
-    color:inherit;
-}
-
-.page{
-    width:100%;
-    max-width:1100px;
-    margin:auto;
-    padding:20px;
-}
-
-/* HERO */
-
-.hero{
-    min-height:620px;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    text-align:center;
-    padding:60px 20px 50px;
-}
-
-.logo{
-    width:105px;
-    height:105px;
-    border-radius:50%;
-    object-fit:cover;
-    border:3px solid var(--accent-color);
-    margin-bottom:24px;
-    box-shadow:0 15px 50px rgba(0,0,0,.45);
-}
-
-.hidden{
-    display:none!important;
-}
-
-.badge{
-    display:inline-flex;
-    align-items:center;
-    padding:9px 15px;
-    border-radius:999px;
-    background:var(--primary-color);
-    color:var(--accent-color);
-    border:1px solid var(--accent-color);
-    font-size:13px;
-    font-weight:bold;
-    margin-bottom:20px;
-}
-
-.hero h1{
-    margin:0;
-    max-width:850px;
-    font-size:clamp(42px,8vw,78px);
-    line-height:.98;
-    letter-spacing:-3px;
-}
-
-.hero-description{
-    max-width:680px;
-    margin:25px auto 30px;
-    color:var(--theme-muted);
-    font-size:18px;
-    line-height:1.7;
-}
-
-.hero-actions{
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:center;
-    gap:12px;
-}
-
-.action{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    min-height:55px;
-    padding:0 25px;
-    border-radius:16px;
-    border:1px solid var(--border);
-    background:var(--primary-color);
-    color:var(--accent-color);
-    text-decoration:none;
-    font-weight:bold;
-    transition:.2s;
-}
-
-.action:hover{
-    transform:translateY(-3px);
-}
-
-.action.secondary{
-    background:transparent;
-    color:var(--theme-text);
-}
-
-/* TRUST */
-
-.trust{
-    display:flex;
-    justify-content:center;
-    flex-wrap:wrap;
-    gap:25px;
-    margin:0 auto 60px;
-    color:var(--theme-muted);
-    font-size:14px;
-}
-
-/* SECTIONS */
-
-.section{
-    margin:80px 0;
-}
-
-.section-header{
-    margin-bottom:30px;
-}
-
-.eyebrow{
-    color:var(--accent-color);
-    font-size:13px;
-    font-weight:bold;
-    text-transform:uppercase;
-    letter-spacing:2px;
-}
-
-.section h2{
-    margin:8px 0;
-    font-size:clamp(30px,5vw,48px);
-    letter-spacing:-1.5px;
-}
-
-.section-subtitle{
-    color:var(--theme-muted);
-    line-height:1.6;
-}
-
-/* OFFER */
-
-.offer{
-    background:
-        linear-gradient(
-            135deg,
-            var(--primary-color),
-            var(--theme-card)
-        );
-
-    border:1px solid var(--border);
-    border-radius:30px;
-    padding:35px;
-    position:relative;
-    overflow:hidden;
-}
-
-.offer:after{
-    content:"";
-    position:absolute;
-    width:220px;
-    height:220px;
-    border-radius:50%;
-    background:var(--accent-color);
-    opacity:.06;
-    right:-80px;
-    top:-80px;
-}
-
-.offer-content{
-    position:relative;
-    z-index:2;
-}
-
-.offer-label{
-    color:var(--accent-color);
-    font-weight:bold;
-    font-size:13px;
-    text-transform:uppercase;
-    letter-spacing:2px;
-}
-
-.offer h3{
-    font-size:clamp(28px,5vw,46px);
-    margin:12px 0;
-}
-
-.offer p{
-    color:var(--theme-muted);
-    max-width:650px;
-    line-height:1.7;
-}
-
-/* SERVICES */
-
-.services-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:18px;
-}
-
-.card{
-    background:var(--theme-card);
-    border:1px solid var(--border);
-    border-radius:20px;
-    padding:24px;
-    box-shadow:0 12px 35px rgba(0,0,0,.15);
-}
-
-.service{
-    display:flex;
-    flex-direction:column;
-    min-height:210px;
-}
-
-.service h3{
-    margin:0 0 10px;
-    font-size:21px;
-}
-
-.service p{
-    color:var(--theme-muted);
-    line-height:1.6;
-    flex:1;
-}
-
-.price{
-    color:var(--accent-color);
-    font-size:21px;
-    font-weight:bold;
-}
-
-/* GALLERY */
-
-.gallery{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:12px;
-}
-
-.gallery-item{
-    min-height:260px;
-    border-radius:20px;
-    overflow:hidden;
-    background:var(--theme-card);
-    border:1px solid var(--border);
-}
-
-.gallery-item img{
-    width:100%;
-    height:100%;
-    min-height:260px;
-    object-fit:cover;
-    display:block;
-    transition:.3s;
-}
-
-.gallery-item:hover img{
-    transform:scale(1.04);
-}
-
-/* TESTIMONIALS */
-
-.testimonials{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:18px;
-}
-
-.testimonial{
-    min-height:180px;
-}
-
-.stars{
-    color:var(--accent-color);
-    letter-spacing:3px;
-    margin-bottom:15px;
-}
-
-.testimonial p{
-    line-height:1.7;
-    color:var(--theme-text);
-}
-
-.author{
-    color:var(--theme-muted);
-    font-size:14px;
-}
-
-/* INFO */
-
-.info-grid{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:15px;
-}
-
-.info-item{
-    display:flex;
-    gap:15px;
-    align-items:flex-start;
-}
-
-.info-icon{
-    font-size:25px;
-}
-
-.info-item strong{
-    display:block;
-    margin-bottom:5px;
-}
-
-.info-item span{
-    color:var(--theme-muted);
-    line-height:1.5;
-}
-
-/* FINAL CTA */
-
-.final-cta{
-    text-align:center;
-    padding:70px 25px;
-    border-radius:30px;
-    background:var(--theme-card);
-    border:1px solid var(--border);
-}
-
-.final-cta h2{
-    font-size:clamp(32px,6vw,55px);
-    margin:0 0 15px;
-}
-
-.final-cta p{
-    color:var(--theme-muted);
-    max-width:600px;
-    margin:0 auto 28px;
-    line-height:1.7;
-}
-
-/* QR */
-
-.qr-section{
-    text-align:center;
-}
-
-.qr-box{
-    display:inline-flex;
-    flex-direction:column;
-    align-items:center;
-    gap:18px;
-}
-
-.qr-box img{
-    width:240px;
-    height:240px;
-    padding:12px;
-    background:white;
-    border-radius:20px;
-}
-
-.qr-box p{
-    color:var(--theme-muted);
-    margin:0;
-}
-
-/* FOOTER */
-
-footer{
-    text-align:center;
-    color:var(--theme-muted);
-    padding:45px 0 25px;
-    font-size:13px;
-}
-
-/* RESPONSIVE */
-
-@media(max-width:800px){
-
-    .services-grid,
-    .testimonials{
-        grid-template-columns:1fr;
+    .hero h1 {
+        font-size: 43px;
+        letter-spacing: -2px;
     }
 
-    .gallery{
-        grid-template-columns:repeat(2,1fr);
-    }
+    .hero-description { font-size: 16px; }
 
-    .info-grid{
-        grid-template-columns:1fr;
-    }
+    .hero-actions { width: 100%; }
 
-    .hero{
-        min-height:auto;
-        padding-top:45px;
-    }
-}
+    .action { width: 100%; }
 
-@media(max-width:500px){
-
-    .page{
-        padding:12px;
-    }
-
-    .hero{
-        padding:45px 10px;
-    }
-
-    .hero h1{
-        font-size:43px;
-        letter-spacing:-2px;
-    }
-
-    .hero-description{
-        font-size:16px;
-    }
-
-    .hero-actions{
-        width:100%;
-    }
-
-    .action{
-        width:100%;
-    }
-
-    .gallery{
-        grid-template-columns:1fr;
-    }
+    .gallery { grid-template-columns: 1fr; }
 
     .offer,
-    .final-cta{
-        padding:25px 20px;
+    .final-cta {
+        padding: 25px 20px;
+    }
+
+    body.template-barber .hero,
+    body.template-beauty .hero {
+        padding: 40px 15px;
     }
 }
 </style>
 </head>
 
 <body>
-
 <div class="page">
 
-    <!-- HERO -->
     <section class="hero">
+        <img id="logo" class="logo hidden" alt="Logo del negocio">
 
-        <img id="logo" class="logo hidden" alt="Logo">
+        <div id="category" class="badge">Perfil digital</div>
 
-        <div id="category" class="badge">
-            Perfil digital
-        </div>
-
-        <h1 id="headline">
-            Tu nuevo estilo comienza aquí
-        </h1>
+        <h1 id="headline">Tu nuevo estilo comienza aquí</h1>
 
         <p id="description" class="hero-description">
             Descubre nuestros servicios y ponte en contacto con nosotros.
         </p>
 
         <div class="hero-actions">
-
-            <a id="hero-whatsapp"
-               class="action hidden"
-               href="#"
-               target="_blank">
+            <a id="hero-whatsapp" class="action hidden" href="#" target="_blank" rel="noopener noreferrer">
                 💬 Reservar ahora
             </a>
 
-            <a id="hero-maps"
-               class="action secondary hidden"
-               href="#"
-               target="_blank">
+            <a id="hero-maps" class="action secondary hidden" href="#" target="_blank" rel="noopener noreferrer">
                 📍 Cómo llegar
             </a>
-
         </div>
-
     </section>
 
-    <!-- TRUST -->
     <div class="trust">
-
         <span>✓ Atención personalizada</span>
         <span>✓ Servicio profesional</span>
         <span>✓ Reserva directa</span>
-
     </div>
 
-    <!-- OFFER -->
     <section id="offer-section" class="section hidden">
-
         <div class="offer">
-
             <div class="offer-content">
-
-                <div class="offer-label">
-                    Oferta destacada
-                </div>
-
+                <div class="offer-label">Oferta destacada</div>
                 <h3 id="offer-title"></h3>
-
                 <p id="offer-description"></p>
 
-                <a id="offer-whatsapp"
-                   class="action hidden"
-                   href="#"
-                   target="_blank">
+                <a id="offer-whatsapp" class="action hidden" href="#" target="_blank" rel="noopener noreferrer">
                     Reservar ahora →
                 </a>
-
             </div>
-
         </div>
-
     </section>
 
-    <!-- SERVICES -->
     <section id="services-section" class="section hidden">
-
         <div class="section-header">
-
-            <div class="eyebrow">
-                Servicios
-            </div>
-
+            <div class="eyebrow">Servicios</div>
             <h2>Lo que hacemos</h2>
-
-            <p class="section-subtitle">
-                Conoce nuestros principales servicios.
-            </p>
-
+            <p class="section-subtitle">Conoce nuestros principales servicios.</p>
         </div>
-
         <div id="services" class="services-grid"></div>
-
     </section>
 
-    <!-- GALLERY -->
     <section id="gallery-section" class="section hidden">
-
         <div class="section-header">
-
-            <div class="eyebrow">
-                Galería
-            </div>
-
+            <div class="eyebrow">Galería</div>
             <h2>Conoce nuestro trabajo</h2>
-
         </div>
-
         <div id="gallery" class="gallery"></div>
-
     </section>
 
-    <!-- TESTIMONIALS -->
     <section id="testimonials-section" class="section hidden">
-
         <div class="section-header">
-
-            <div class="eyebrow">
-                Clientes
-            </div>
-
+            <div class="eyebrow">Clientes</div>
             <h2>Lo que dicen de nosotros</h2>
-
         </div>
-
         <div id="testimonials" class="testimonials"></div>
-
     </section>
 
-    <!-- INFORMATION -->
     <section class="section">
-
         <div class="section-header">
-
-            <div class="eyebrow">
-                Información
-            </div>
-
+            <div class="eyebrow">Información</div>
             <h2>Encuéntranos</h2>
-
         </div>
 
         <div class="info-grid">
-
             <div id="address-card" class="card info-item hidden">
                 <div class="info-icon">📍</div>
                 <div>
@@ -806,770 +711,522 @@ footer{
                     <span>Conecta con nosotros online.</span>
                 </div>
             </div>
-
         </div>
-
     </section>
 
-    <!-- ACTIONS -->
     <section class="section">
-
         <div class="hero-actions">
-
-            <a id="whatsapp"
-               class="action hidden"
-               href="#"
-               target="_blank">
+            <a id="whatsapp" class="action hidden" href="#" target="_blank" rel="noopener noreferrer">
                 💬 WhatsApp
             </a>
 
-            <a id="call"
-               class="action secondary hidden"
-               href="#">
+            <a id="call" class="action secondary hidden" href="#">
                 📞 Llamar
             </a>
 
-            <a id="instagram"
-               class="action secondary hidden"
-               href="#"
-               target="_blank">
+            <a id="instagram" class="action secondary hidden" href="#" target="_blank" rel="noopener noreferrer">
                 📸 Instagram
             </a>
 
-            <a id="maps"
-               class="action secondary hidden"
-               href="#"
-               target="_blank">
+            <a id="maps" class="action secondary hidden" href="#" target="_blank" rel="noopener noreferrer">
                 📍 Cómo llegar
             </a>
 
-            <a id="website"
-               class="action secondary hidden"
-               href="#"
-               target="_blank">
+            <a id="website" class="action secondary hidden" href="#" target="_blank" rel="noopener noreferrer">
                 🌐 Sitio web
             </a>
-
         </div>
-
     </section>
 
-    <!-- FINAL CTA -->
     <section class="section">
-
         <div class="final-cta">
-
-            <div class="eyebrow">
-                ¿Listo?
-            </div>
-
-            <h2 id="final-title">
-                Haz tu reserva hoy
-            </h2>
-
-            <p>
+            <div class="eyebrow">¿Listo?</div>
+            <h2 id="final-title">Haz tu reserva hoy</h2>
+            <p id="final-description">
                 Ponte en contacto directamente con nosotros y recibe atención personalizada.
             </p>
 
-            <a id="final-whatsapp"
-               class="action hidden"
-               href="#"
-               target="_blank">
+            <a id="final-whatsapp" class="action hidden" href="#" target="_blank" rel="noopener noreferrer">
                 💬 Contactar por WhatsApp
             </a>
-
         </div>
-
     </section>
 
-    <!-- QR -->
     <section class="section qr-section">
-
         <div class="section-header">
-
-            <div class="eyebrow">
-                Acceso rápido
-            </div>
-
+            <div class="eyebrow">Acceso rápido</div>
             <h2>Guarda nuestro perfil</h2>
-
         </div>
 
         <div class="qr-box">
+            <img id="qr-code" src="" alt="Código QR del perfil">
 
-            <img id="qr-code" src="" alt="Código QR">
+            <p>Escanea este código para volver a nuestro perfil.</p>
 
-            <p>
-                Escanea este código para volver a nuestro perfil.
-            </p>
-
-            <a id="download-qr"
-               class="action"
-               href="#"
-               download="codigo-qr.png"
-               target="_blank">
+            <a id="download-qr" class="action" href="#" download="codigo-qr.png" target="_blank" rel="noopener noreferrer">
                 Descargar QR
             </a>
-
         </div>
-
     </section>
 
-    <footer>
-        Perfil digital profesional
-    </footer>
-
+    <footer>Perfil digital profesional</footer>
 </div>
 
 <script>
+"use strict";
 
-const SUPABASE_URL =
-    "https://ktguetjvnhcylybxfjto.supabase.co";
+/* SUPABASE */
+const SUPABASE_URL = "https://ktguetjvnhcylybxfjto.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_jh7Ytp-pUWZvI9isV_-Sbg_aTbY4Qfq";
 
-const SUPABASE_ANON_KEY =
-    "sb_publishable_jh7Ytp-pUWZvI9isV_-Sbg_aTbY4Qfq";
+const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+);
 
-const supabaseClient =
-    supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_ANON_KEY
-    );
-
-
-/* THEMES */
-
+/* TEMAS DE COLOR */
 const THEMES = {
-
-    general:{
-        primary:"#111111",
-        accent:"#ffffff",
-        background:"#0b0b0b",
-        card:"#151515",
-        text:"#ffffff",
-        muted:"#a1a1aa",
-        badge:"Perfil digital"
+    general: {
+        primary: "#111111",
+        accent: "#ffffff",
+        background: "#0b0b0b",
+        card: "#151515",
+        text: "#ffffff",
+        muted: "#a1a1aa",
+        badge: "Perfil digital"
     },
-
-    barber:{
-        primary:"#111111",
-        accent:"#d4af37",
-        background:"#080808",
-        card:"#151515",
-        text:"#ffffff",
-        muted:"#b5b5b5",
-        badge:"Barbería premium"
+    barber: {
+        primary: "#111111",
+        accent: "#d4af37",
+        background: "#080808",
+        card: "#151515",
+        text: "#ffffff",
+        muted: "#b5b5b5",
+        badge: "Barbería premium"
     },
-
-    cafe:{
-        primary:"#6F4E37",
-        accent:"#f3d7b5",
-        background:"#211710",
-        card:"#302118",
-        text:"#fff8f0",
-        muted:"#d5c0ad",
-        badge:"Café de especialidad"
+    cafe: {
+        primary: "#6F4E37",
+        accent: "#f3d7b5",
+        background: "#211710",
+        card: "#302118",
+        text: "#fff8f0",
+        muted: "#d5c0ad",
+        badge: "Café de especialidad"
     },
-
-    restaurant:{
-        primary:"#8b1e1e",
-        accent:"#f4d58d",
-        background:"#130909",
-        card:"#241010",
-        text:"#fffaf0",
-        muted:"#d4c1b8",
-        badge:"Experiencia gastronómica"
+    restaurant: {
+        primary: "#8b1e1e",
+        accent: "#f4d58d",
+        background: "#130909",
+        card: "#241010",
+        text: "#fffaf0",
+        muted: "#d4c1b8",
+        badge: "Experiencia gastronómica"
     },
-
-    beauty:{
-        primary:"#9b5c72",
-        accent:"#f6d9e3",
-        background:"#1b1015",
-        card:"#29171f",
-        text:"#fff7fa",
-        muted:"#d8bfc8",
-        badge:"Belleza & cuidado"
+    beauty: {
+        primary: "#9b5c72",
+        accent: "#f6d9e3",
+        background: "#1b1015",
+        card: "#29171f",
+        text: "#fff7fa",
+        muted: "#d8bfc8",
+        badge: "Belleza y cuidado"
     },
-
-    gym:{
-        primary:"#c62828",
-        accent:"#ffffff",
-        background:"#090909",
-        card:"#171717",
-        text:"#ffffff",
-        muted:"#bdbdbd",
-        badge:"Entrenamiento"
+    gym: {
+        primary: "#c62828",
+        accent: "#ffffff",
+        background: "#090909",
+        card: "#171717",
+        text: "#ffffff",
+        muted: "#bdbdbd",
+        badge: "Entrenamiento"
     },
-
-    professional:{
-        primary:"#174a7e",
-        accent:"#dbeafe",
-        background:"#07111d",
-        card:"#101e2d",
-        text:"#f8fbff",
-        muted:"#aebdcd",
-        badge:"Servicios profesionales"
+    professional: {
+        primary: "#174a7e",
+        accent: "#dbeafe",
+        background: "#07111d",
+        card: "#101e2d",
+        text: "#f8fbff",
+        muted: "#aebdcd",
+        badge: "Servicios profesionales"
     },
-
-    store:{
-        primary:"#5b3a8e",
-        accent:"#eadcff",
-        background:"#100b17",
-        card:"#1c1327",
-        text:"#ffffff",
-        muted:"#c8bdd1",
-        badge:"Tienda"
+    store: {
+        primary: "#5b3a8e",
+        accent: "#eadcff",
+        background: "#100b17",
+        card: "#1c1327",
+        text: "#ffffff",
+        muted: "#c8bdd1",
+        badge: "Tienda"
     },
-
-    pets:{
-        primary:"#28745a",
-        accent:"#d8f3e6",
-        background:"#081510",
-        card:"#10251d",
-        text:"#f5fff9",
-        muted:"#b7cfc3",
-        badge:"Mascotas"
+    pets: {
+        primary: "#28745a",
+        accent: "#d8f3e6",
+        background: "#081510",
+        card: "#10251d",
+        text: "#f5fff9",
+        muted: "#b7cfc3",
+        badge: "Mascotas"
     }
-
 };
 
-
-/* HELPERS */
-
-function escapeHtml(value){
-
-    if(value === null || value === undefined){
-        return "";
-    }
+/* UTILIDADES */
+function escapeHtml(value) {
+    if (value === null || value === undefined) return "";
 
     return String(value)
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
-
-function show(id){
-
-    const element =
-        document.getElementById(id);
-
-    if(element){
-        element.classList.remove("hidden");
-    }
-
+function show(id) {
+    const element = document.getElementById(id);
+    if (element) element.classList.remove("hidden");
 }
 
-
-function hide(id){
-
-    const element =
-        document.getElementById(id);
-
-    if(element){
-        element.classList.add("hidden");
-    }
-
+function hide(id) {
+    const element = document.getElementById(id);
+    if (element) element.classList.add("hidden");
 }
 
-
-function setLink(id,url){
-
-    const element =
-        document.getElementById(id);
-
-    if(!element || !url){
-        return;
-    }
+function setLink(id, url) {
+    const element = document.getElementById(id);
+    if (!element || !url) return;
 
     element.href = url;
-
     show(id);
 }
 
+function normalizeText(value) {
+    return String(value || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+}
 
-
-/* SLUG */
-
-const pathParts = window.location.pathname
-    .split("/")
-    .filter(Boolean);
-
-const urlParams = new URLSearchParams(window.location.search);
-
-const lastPart = pathParts[pathParts.length - 1] || "";
-
-const reservedPaths = ["qr-nfc-business", "templates", "business"];
-
-const slugFromPath = reservedPaths.includes(lastPart)
-    ? ""
-    : lastPart;
-
-const slug =
-    urlParams.get("slug") ||
-    slugFromPath;
-
-/* LOAD */
-
-async function loadBusiness(){
-
-    const { data,error } =
-        await supabaseClient
-            .from("businesses")
-            .select("*")
-            .eq("slug",slug)
-            .eq("is_published",true)
-            .single();
-
-
-    if(error || !data){
-
-        document.body.innerHTML = `
-            <div style="
-                min-height:100vh;
-                display:flex;
-                align-items:center;
-                justify-content:center;
-                text-align:center;
-                padding:30px;
-                font-family:Arial;
-                background:#111;
-                color:white;
-            ">
-                <div>
-                    <h1>Negocio no encontrado</h1>
-                    <p>El perfil solicitado no está disponible.</p>
-                </div>
-            </div>
-        `;
-
-        console.error(error);
-
-        return;
-    }
-
-
-    document.title =
-        data.name || "Perfil digital";
-
-
-    /* THEME */
-
-    
-/* PLANTILLA Y TEMA DEL NEGOCIO */
-
+/* DETECTAR PLANTILLA */
 function detectTemplate(data) {
-    const type = String(data.template_type || "").toLowerCase();
-    const category = String(data.category || "").toLowerCase();
+    const type = normalizeText(data.template_type);
+    const category = normalizeText(data.category);
     const value = type + " " + category;
 
     if (value.includes("barber") || value.includes("peluquer")) {
         return "barber";
     }
 
-    if (value.includes("cafe") || value.includes("café") ||
-        value.includes("cafeter")) {
+    if (value.includes("cafe") || value.includes("cafeter")) {
         return "cafe";
     }
 
-    if (value.includes("restaurant") || value.includes("restaurante") ||
-        value.includes("gastronom")) {
+    if (value.includes("restaurant") || value.includes("gastronom")
+        || value.includes("restaurante")) {
         return "restaurant";
     }
 
-    if (value.includes("beauty") || value.includes("belleza") ||
-        value.includes("estetica") || value.includes("estética") ||
-        value.includes("cosmetic")) {
+    if (value.includes("beauty") || value.includes("belleza")
+        || value.includes("estetica") || value.includes("cosmetic")
+        || value.includes("cuidado capilar") || value.includes("cuidado facial")) {
         return "beauty";
+    }
+
+    if (value.includes("gym") || value.includes("gimnas")
+        || value.includes("entrenamiento") || value.includes("fitness")) {
+        return "gym";
+    }
+
+    if (value.includes("profesional") || value.includes("consultor")
+        || value.includes("abogado") || value.includes("contador")) {
+        return "professional";
+    }
+
+    if (value.includes("store") || value.includes("tienda")
+        || value.includes("comercio") || value.includes("productos")) {
+        return "store";
+    }
+
+    if (value.includes("pet") || value.includes("mascota")
+        || value.includes("veterin")) {
+        return "pets";
     }
 
     return "general";
 }
 
-const templateType = detectTemplate(data);
+/* OBTENER SLUG DEL PERFIL */
+function getBusinessSlug() {
+    const params = new URLSearchParams(window.location.search);
+    const querySlug = params.get("slug");
 
-document.body.classList.add("template-" + templateType);
+    if (querySlug) return querySlug.trim();
 
-const theme = THEMES[templateType] || THEMES.general;
+    const pathParts = window.location.pathname
+        .split("/")
+        .filter(Boolean);
 
+    const lastPart = pathParts[pathParts.length - 1] || "";
 
-    document.documentElement.style.setProperty(
-        "--primary-color",
-        theme.primary
-    );
+    const reservedPaths = [
+        "qr-nfc-business",
+        "templates",
+        "business",
+        "404.html",
+        "index.html"
+    ];
 
-    document.documentElement.style.setProperty(
-        "--accent-color",
-        theme.accent
-    );
+    if (reservedPaths.includes(lastPart)) return "";
 
-    document.documentElement.style.setProperty(
-        "--theme-background",
-        theme.background
-    );
-
-    document.documentElement.style.setProperty(
-        "--theme-card",
-        theme.card
-    );
-
-    document.documentElement.style.setProperty(
-        "--theme-text",
-        theme.text
-    );
-
-    document.documentElement.style.setProperty(
-        "--theme-muted",
-        theme.muted
-    );
-
-
-    /* LOGO */
-
-    if(data.logo_url){
-
-        const logo =
-            document.getElementById("logo");
-
-        logo.src = data.logo_url;
-
-        show("logo");
-    }
-
-
-    /* CATEGORY */
-
-    document.getElementById("category")
-        .textContent =
-        data.category || theme.badge;
-
-
-    /* HEADLINE */
-
-    document.getElementById("headline")
-        .textContent =
-        data.headline
-        || data.name
-        || "Tu nuevo estilo comienza aquí";
-
-
-    /* DESCRIPTION */
-
-    document.getElementById("description")
-        .textContent =
-        data.description || "";
-
-
-    /* WHATSAPP */
-
-    let whatsappUrl = "";
-
-    if(data.whatsapp){
-
-        whatsappUrl =
-            "https://wa.me/"
-            + data.whatsapp
-            + "?text="
-            + encodeURIComponent(
-                "Hola, vi su perfil digital y me gustaría obtener más información. 😊"
-            );
-
-        setLink("hero-whatsapp",whatsappUrl);
-        setLink("whatsapp",whatsappUrl);
-        setLink("offer-whatsapp",whatsappUrl);
-        setLink("final-whatsapp",whatsappUrl);
-
-        const cta =
-            data.cta_text
-            || "Reservar ahora";
-
-        document.getElementById("hero-whatsapp")
-            .textContent =
-            "💬 " + cta;
-
-        document.getElementById("offer-whatsapp")
-            .textContent =
-            cta + " →";
-
-        document.getElementById("final-whatsapp")
-            .textContent =
-            "💬 " + cta;
-
-    }
-
-
-    /* MAPS */
-
-    if(data.maps_url){
-
-        setLink(
-            "hero-maps",
-            data.maps_url
-        );
-
-        setLink(
-            "maps",
-            data.maps_url
-        );
-
-    }
-
-
-    /* PHONE */
-
-    if(data.phone){
-
-        document.getElementById("phone")
-            .textContent =
-            data.phone;
-
-        show("phone-card");
-
-        setLink(
-            "call",
-            "tel:"
-            + data.phone.replace(/\s/g,"")
-        );
-
-    }
-
-
-    /* ADDRESS */
-
-    if(data.address){
-
-        document.getElementById("address")
-            .textContent =
-            data.address;
-
-        show("address-card");
-
-    }
-
-
-    /* HOURS */
-
-    if(data.opening_hours){
-
-        document.getElementById("hours")
-            .textContent =
-            data.opening_hours;
-
-        show("hours-card");
-
-    }
-
-
-    /* INSTAGRAM */
-
-    if(data.instagram){
-
-        setLink(
-            "instagram",
-            data.instagram
-        );
-
-        show("social-card");
-
-    }
-
-
-    /* WEBSITE */
-
-    if(data.website){
-
-        setLink(
-            "website",
-            data.website
-        );
-
-    }
-
-
-    /* OFFER */
-
-    if(
-        data.offer_title
-        || data.offer_description
-    ){
-
-        show("offer-section");
-
-        document.getElementById("offer-title")
-            .textContent =
-            data.offer_title
-            || "Oferta especial";
-
-        document.getElementById("offer-description")
-            .textContent =
-            data.offer_description || "";
-
-    }
-
-
-    /* SERVICES */
-
-    if(
-        Array.isArray(data.services)
-        && data.services.length
-    ){
-
-        show("services-section");
-
-        const container =
-            document.getElementById("services");
-
-        container.innerHTML =
-            data.services
-                .map(service => `
-
-                    <div class="card service">
-
-                        <h3>
-                            ${escapeHtml(service.name)}
-                        </h3>
-
-                        <p>
-                            ${escapeHtml(
-                                service.description || ""
-                            )}
-                        </p>
-
-                        <div class="price">
-                            ${escapeHtml(
-                                service.price || ""
-                            )}
-                        </div>
-
-                    </div>
-
-                `)
-                .join("");
-
-    }
-
-
-    /* GALLERY */
-
-    if(
-        Array.isArray(data.gallery)
-        && data.gallery.length
-    ){
-
-        show("gallery-section");
-
-        const gallery =
-            document.getElementById("gallery");
-
-        gallery.innerHTML =
-            data.gallery
-                .map(item => {
-
-                    const url =
-                        typeof item === "string"
-                        ? item
-                        : item.url;
-
-                    if(!url){
-                        return "";
-                    }
-
-                    return `
-
-                        <div class="gallery-item">
-
-                            <img
-                                src="${escapeHtml(url)}"
-                                alt="${escapeHtml(data.name)}"
-                                loading="lazy"
-                            >
-
-                        </div>
-
-                    `;
-
-                })
-                .join("");
-
-    }
-
-
-    /* TESTIMONIALS */
-
-    if(
-        Array.isArray(data.testimonials)
-        && data.testimonials.length
-    ){
-
-        show("testimonials-section");
-
-        const container =
-            document.getElementById("testimonials");
-
-        container.innerHTML =
-            data.testimonials
-                .map(item => `
-
-                    <div class="card testimonial">
-
-                        <div class="stars">
-                            ★★★★★
-                        </div>
-
-                        <p>
-                            "${escapeHtml(
-                                item.text || ""
-                            )}"
-                        </p>
-
-                        <div class="author">
-                            ${escapeHtml(
-                                item.author || "Cliente"
-                            )}
-                        </div>
-
-                    </div>
-
-                `)
-                .join("");
-
-    }
-
-
-    /* FINAL TITLE */
-
-    document.getElementById("final-title")
-        .textContent =
-        data.cta_text
-        ? data.cta_text
-        : "Haz tu reserva hoy";
-
-
-    /* QR */
-
-    const currentUrl = window.location.href;
-
-
-    const qrUrl =
-        "https://quickchart.io/qr?text="
-        + encodeURIComponent(currentUrl)
-        + "&size=500";
-
-
-    document.getElementById("qr-code")
-        .src = qrUrl;
-
-
-    document.getElementById("download-qr")
-        .href = qrUrl;
-
+    return lastPart;
 }
 
+/* APLICAR TEMA */
+function applyTheme(templateType) {
+    const theme = THEMES[templateType] || THEMES.general;
+
+    document.body.classList.add("template-" + templateType);
+
+    document.documentElement.style.setProperty("--primary-color", theme.primary);
+    document.documentElement.style.setProperty("--accent-color", theme.accent);
+    document.documentElement.style.setProperty("--theme-background", theme.background);
+    document.documentElement.style.setProperty("--theme-card", theme.card);
+    document.documentElement.style.setProperty("--theme-text", theme.text);
+    document.documentElement.style.setProperty("--theme-muted", theme.muted);
+
+    return theme;
+}
+
+/* MOSTRAR ERROR SIN MOSTRAR CÓDIGO */
+function showProfileError(message) {
+    document.body.innerHTML = `
+        <main style="
+            min-height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            text-align:center;
+            padding:30px;
+            font-family:Arial,sans-serif;
+            background:#111;
+            color:white;
+        ">
+            <div>
+                <h1>Perfil no disponible</h1>
+                <p>${escapeHtml(message)}</p>
+                <a href="/qr-nfc-business/" style="color:#ddd;">
+                    Volver al inicio
+                </a>
+            </div>
+        </main>
+    `;
+}
+
+/* CARGAR PERFIL */
+async function loadBusiness() {
+    const slug = getBusinessSlug();
+
+    if (!slug) {
+        showProfileError("No se indicó qué negocio quieres consultar.");
+        return;
+    }
+
+    try {
+        const { data, error } = await supabaseClient
+            .from("businesses")
+            .select("*")
+            .eq("slug", slug)
+            .eq("is_published", true)
+            .single();
+
+        if (error || !data) {
+            console.error("No se pudo cargar el perfil:", error);
+            showProfileError("El perfil solicitado no existe o no está publicado.");
+            return;
+        }
+
+        document.title = data.name || "Perfil digital";
+
+        /* PLANTILLA Y TEMA */
+        const templateType = detectTemplate(data);
+        const theme = applyTheme(templateType);
+
+        /* LOGO */
+        if (data.logo_url) {
+            const logo = document.getElementById("logo");
+            logo.src = data.logo_url;
+            logo.alt = "Logo de " + (data.name || "el negocio");
+            show("logo");
+        }
+
+        /* CATEGORÍA Y TEXTOS */
+        document.getElementById("category").textContent =
+            data.category || theme.badge;
+
+        document.getElementById("headline").textContent =
+            data.headline || data.name || "Bienvenido a nuestro negocio";
+
+        document.getElementById("description").textContent =
+            data.description || "";
+
+        /* WHATSAPP */
+        let whatsappUrl = "";
+
+        if (data.whatsapp) {
+            const phoneDigits = String(data.whatsapp).replace(/\D/g, "");
+
+            if (phoneDigits) {
+                whatsappUrl = "https://wa.me/" + phoneDigits +
+                    "?text=" + encodeURIComponent(
+                        "Hola, vi su perfil digital y me gustaría obtener más información."
+                    );
+
+                setLink("hero-whatsapp", whatsappUrl);
+                setLink("whatsapp", whatsappUrl);
+                setLink("offer-whatsapp", whatsappUrl);
+                setLink("final-whatsapp", whatsappUrl);
+
+                const cta = data.cta_text || "Reservar ahora";
+
+                document.getElementById("hero-whatsapp").textContent =
+                    "💬 " + cta;
+
+                document.getElementById("offer-whatsapp").textContent =
+                    cta + " →";
+
+                document.getElementById("final-whatsapp").textContent =
+                    "💬 " + cta;
+            }
+        }
+
+        /* MAPAS */
+        if (data.maps_url) {
+            setLink("hero-maps", data.maps_url);
+            setLink("maps", data.maps_url);
+        }
+
+        /* TELÉFONO */
+        if (data.phone) {
+            document.getElementById("phone").textContent = data.phone;
+            show("phone-card");
+
+            const tel = String(data.phone).replace(/[^\d+]/g, "");
+            if (tel) setLink("call", "tel:" + tel);
+        }
+
+        /* DIRECCIÓN */
+        if (data.address) {
+            document.getElementById("address").textContent = data.address;
+            show("address-card");
+        }
+
+        /* HORARIOS */
+        if (data.opening_hours) {
+            document.getElementById("hours").textContent = data.opening_hours;
+            show("hours-card");
+        }
+
+        /* INSTAGRAM */
+        if (data.instagram) {
+            setLink("instagram", data.instagram);
+            show("social-card");
+        }
+
+        /* SITIO WEB */
+        if (data.website) {
+            setLink("website", data.website);
+        }
+
+        /* OFERTA */
+        if (data.offer_title || data.offer_description) {
+            show("offer-section");
+
+            document.getElementById("offer-title").textContent =
+                data.offer_title || "Oferta especial";
+
+            document.getElementById("offer-description").textContent =
+                data.offer_description || "";
+        }
+
+        /* SERVICIOS */
+        if (Array.isArray(data.services) && data.services.length) {
+            const validServices = data.services.filter(service =>
+                service && (service.name || service.description || service.price)
+            );
+
+            if (validServices.length) {
+                show("services-section");
+
+                document.getElementById("services").innerHTML =
+                    validServices.map(service => `
+                        <article class="card service">
+                            <h3>${escapeHtml(service.name || "Servicio")}</h3>
+                            <p>${escapeHtml(service.description || "")}</p>
+                            <div class="price">${escapeHtml(service.price || "")}</div>
+                        </article>
+                    `).join("");
+            }
+        }
+
+        /* GALERÍA */
+        if (Array.isArray(data.gallery) && data.gallery.length) {
+            const items = data.gallery.map(item => {
+                if (typeof item === "string") return item;
+                return item && item.url ? item.url : "";
+            }).filter(Boolean);
+
+            if (items.length) {
+                show("gallery-section");
+
+                document.getElementById("gallery").innerHTML =
+                    items.map(url => `
+                        <div class="gallery-item">
+                            <img
+                                src="${escapeHtml(url)}"
+                                alt="${escapeHtml(data.name || "Imagen del negocio")}"
+                                loading="lazy"
+                            >
+                        </div>
+                    `).join("");
+            }
+        }
+
+        /* TESTIMONIOS */
+        if (Array.isArray(data.testimonials) && data.testimonials.length) {
+            show("testimonials-section");
+
+            document.getElementById("testimonials").innerHTML =
+                data.testimonials.map(item => `
+                    <article class="card testimonial">
+                        <div class="stars" aria-label="Cinco estrellas">★★★★★</div>
+                        <p>“${escapeHtml(item && item.text || "")}”</p>
+                        <div class="author">
+                            ${escapeHtml(item && item.author || "Cliente")}
+                        </div>
+                    </article>
+                `).join("");
+        }
+
+        /* TEXTO FINAL */
+        document.getElementById("final-title").textContent =
+            data.cta_text || "Haz tu reserva hoy";
+
+        /* QR: UTILIZAR LA URL COMPLETA PARA CONSERVAR EL SLUG */
+        const currentUrl = window.location.href;
+
+        const qrUrl = "https://quickchart.io/qr?text=" +
+            encodeURIComponent(currentUrl) +
+            "&size=500";
+
+        document.getElementById("qr-code").src = qrUrl;
+        document.getElementById("download-qr").href = qrUrl;
+
+    } catch (err) {
+        console.error("Error inesperado al cargar el perfil:", err);
+        showProfileError("Ocurrió un error al cargar el perfil. Inténtalo nuevamente más tarde.");
+    }
+}
 
 loadBusiness();
-
 </script>
-
 </body>
 </html>
