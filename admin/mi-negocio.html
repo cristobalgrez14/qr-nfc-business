@@ -584,6 +584,68 @@ client.auth.getSession().then(({ data, error }) => {
         verifyMembership(data.session.user);
     }
 });
+    
+form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const resultBox = document.getElementById("result");
+    const saveButton = form.querySelector('button[type="submit"]');
+
+    if (!saveButton) {
+        resultBox.textContent = "No se encontró el botón Guardar.";
+        return;
+    }
+
+    const { data: sessionData, error: sessionError } =
+        await client.auth.getSession();
+
+    if (sessionError || !sessionData.session) {
+        resultBox.textContent =
+            "Tu sesión ha caducado. Inicia sesión de nuevo.";
+        return;
+    }
+
+    saveButton.disabled = true;
+    resultBox.textContent = "Guardando cambios…";
+
+    try {
+        const updates = {};
+
+        editableFields.forEach((field) => {
+            updates[field] =
+                document.getElementById(field).value.trim();
+        });
+
+        const { data: business, error: lookupError } = await client
+            .from("businesses")
+            .select("id")
+            .eq("slug", slug)
+            .eq("is_published", true)
+            .single();
+
+        if (lookupError) throw lookupError;
+
+        const { data: updatedRows, error: updateError } = await client
+            .from("businesses")
+            .update(updates)
+            .eq("id", business.id)
+            .select("id");
+
+        if (updateError) throw updateError;
+
+        if (!updatedRows || updatedRows.length === 0) {
+            throw new Error("No se actualizó ningún registro.");
+        }
+
+        resultBox.textContent = "¡Cambios guardados correctamente!";
+    } catch (error) {
+        console.error("Error al guardar:", error);
+        resultBox.textContent =
+            "No se pudieron guardar los cambios. Revisa los permisos.";
+    } finally {
+        saveButton.disabled = false;
+    }
+});
 </script>
 </body>
 </html>
