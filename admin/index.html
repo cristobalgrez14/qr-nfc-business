@@ -569,7 +569,7 @@ function renderBusinesses() {
   grid.innerHTML = filtered.map(business => {
     const style = getStyle(business);
     const slug = encodeURIComponent(business.slug || "");
-    const publicURL = `../templates/business/?slug=${slug}`;
+    const publicURL = `../${slug}`;
     const editURL = `./mi-negocio.html?slug=${slug}`;
 
     return `
