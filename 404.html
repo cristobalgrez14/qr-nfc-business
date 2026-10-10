@@ -8,6 +8,156 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+/* =========================================
+   PLANTILLAS VISUALES DIFERENCIADAS
+   ========================================= */
+
+/* BARBERÍA: editorial masculino, negro y dorado */
+body.template-barber .hero {
+    align-items: flex-start;
+    text-align: left;
+    min-height: 540px;
+    border-bottom: 2px solid var(--accent-color);
+    padding: 70px 35px;
+}
+
+body.template-barber .hero h1 {
+    text-transform: uppercase;
+    letter-spacing: -2px;
+    font-weight: 900;
+}
+
+body.template-barber .logo {
+    border-radius: 18px;
+    width: 120px;
+    height: 120px;
+}
+
+body.template-barber .action {
+    border-radius: 5px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+
+body.template-barber .card,
+body.template-barber .offer {
+    border-radius: 8px;
+    border-color: rgba(212,175,55,.35);
+}
+
+/* CAFETERÍA: cálida, artesanal y editorial */
+body.template-cafe {
+    font-family: Georgia, "Times New Roman", serif;
+}
+
+body.template-cafe .hero {
+    min-height: 480px;
+    margin-top: 18px;
+    border-radius: 32px;
+    background:
+        radial-gradient(circle at 80% 20%, #79583e 0%, transparent 45%),
+        linear-gradient(135deg, #302016, #17100c);
+}
+
+body.template-cafe .hero h1,
+body.template-cafe .section h2 {
+    font-weight: 500;
+    letter-spacing: -1px;
+}
+
+body.template-cafe .logo {
+    border-radius: 24px;
+    border-width: 2px;
+}
+
+body.template-cafe .card {
+    border-radius: 24px;
+    background: #38271d;
+}
+
+body.template-cafe .action {
+    border-radius: 999px;
+}
+
+/* RESTAURANTE: experiencia gastronómica */
+body.template-restaurant .hero {
+    min-height: 590px;
+    border-bottom: 1px solid var(--accent-color);
+    background:
+        linear-gradient(180deg, transparent 35%, rgba(0,0,0,.35)),
+        radial-gradient(ellipse at top, #482020, #130909 75%);
+}
+
+body.template-restaurant .hero h1,
+body.template-restaurant .section h2,
+body.template-restaurant .offer h3 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: 500;
+    letter-spacing: -1px;
+}
+
+body.template-restaurant .offer {
+    border-radius: 4px;
+    border-left: 5px solid var(--accent-color);
+}
+
+body.template-restaurant .card {
+    border-radius: 5px;
+}
+
+body.template-restaurant .service {
+    border-top: 2px solid var(--accent-color);
+}
+
+/* BELLEZA: elegante, suave y luminoso */
+body.template-beauty .hero {
+    min-height: 520px;
+    align-items: flex-start;
+    text-align: left;
+    border-radius: 32px;
+    margin-top: 18px;
+    background:
+        radial-gradient(circle at 90% 10%, #57303f, transparent 50%),
+        linear-gradient(135deg, #29151f, #130d11);
+}
+
+body.template-beauty .hero h1,
+body.template-beauty .section h2 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: 400;
+    letter-spacing: -1.5px;
+}
+
+body.template-beauty .logo {
+    border-radius: 24px;
+    border: 2px solid var(--accent-color);
+}
+
+body.template-beauty .card,
+body.template-beauty .offer,
+body.template-beauty .final-cta {
+    border-radius: 28px;
+    border-color: rgba(246,217,227,.3);
+}
+
+body.template-beauty .action {
+    border-radius: 999px;
+}
+
+/* MÓVILES */
+@media (max-width: 600px) {
+    body.template-barber .hero,
+    body.template-beauty .hero {
+        padding: 40px 20px;
+        min-height: auto;
+    }
+
+    body.template-cafe .hero,
+    body.template-restaurant .hero {
+        min-height: auto;
+        padding: 50px 20px;
+    }
+}
 <style>
 :root{
     --primary-color:#111111;
