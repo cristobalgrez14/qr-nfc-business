@@ -415,6 +415,210 @@ footer{
     font-size:13px;
 }
 
+/* =========================
+   PLANTILLA BARBERÍA PREMIUM
+   ========================= */
+
+body.template-barber {
+    background: #090909;
+    font-family: "Arial", sans-serif;
+}
+
+.template-barber .page {
+    max-width: 1240px;
+    padding: 24px;
+}
+
+.template-barber .hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: 690px;
+    align-items: flex-start;
+    text-align: left;
+    justify-content: flex-end;
+    padding: 70px clamp(24px, 6vw, 80px);
+    border: 1px solid rgba(212,175,55,.24);
+    border-radius: 8px;
+    background:
+        linear-gradient(
+            90deg,
+            rgba(0,0,0,.94) 0%,
+            rgba(0,0,0,.70) 48%,
+            rgba(0,0,0,.18) 100%
+        ),
+        linear-gradient(0deg, #090909 0%, transparent 45%),
+        #171717;
+}
+
+.template-barber .hero > * {
+    position: relative;
+    z-index: 1;
+}
+
+.template-barber .logo {
+    width: 82px;
+    height: 82px;
+    border: 2px solid #d4af37;
+    border-radius: 4px;
+}
+
+.template-barber .badge {
+    background: rgba(212,175,55,.10);
+    color: #e7c96c;
+    border: 1px solid rgba(212,175,55,.55);
+    border-radius: 3px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-size: 11px;
+}
+
+.template-barber .hero h1 {
+    max-width: 780px;
+    font-size: clamp(48px, 8vw, 92px);
+    line-height: .98;
+    letter-spacing: -3px;
+    text-transform: uppercase;
+    text-wrap: balance;
+}
+
+.template-barber .hero-description {
+    max-width: 560px;
+    margin: 22px 0 28px;
+    font-size: 17px;
+    color: #d1d1d1;
+}
+
+.template-barber .action {
+    border-radius: 3px;
+    min-height: 54px;
+    background: #d4af37;
+    color: #111;
+    border-color: #d4af37;
+    font-size: 13px;
+    letter-spacing: .4px;
+    text-transform: uppercase;
+}
+
+.template-barber .action.secondary {
+    background: transparent;
+    color: #fff;
+    border-color: rgba(255,255,255,.35);
+}
+
+.template-barber .trust {
+    padding: 24px 10px;
+    border-bottom: 1px solid rgba(212,175,55,.25);
+    gap: 18px 36px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 11px;
+}
+
+.template-barber .section {
+    margin: 90px 0;
+}
+
+.template-barber .eyebrow {
+    color: #d4af37;
+    letter-spacing: 3px;
+    font-size: 11px;
+}
+
+.template-barber .section h2 {
+    font-size: clamp(32px, 5vw, 54px);
+    text-transform: uppercase;
+}
+
+.template-barber .card {
+    background: linear-gradient(145deg, #1b1b1b, #101010);
+    border: 1px solid rgba(212,175,55,.18);
+    border-radius: 5px;
+    box-shadow: none;
+}
+
+.template-barber .service {
+    min-height: 230px;
+    padding: 28px;
+    transition: transform .2s, border-color .2s;
+}
+
+.template-barber .service:hover {
+    transform: translateY(-4px);
+    border-color: #d4af37;
+}
+
+.template-barber .price {
+    color: #e7c96c;
+    border-top: 1px solid rgba(255,255,255,.12);
+    padding-top: 16px;
+}
+
+.template-barber .gallery {
+    grid-template-columns: 1.2fr 1fr 1fr;
+    grid-auto-rows: 290px;
+}
+
+.template-barber .gallery-item {
+    min-height: 0;
+    border-radius: 5px;
+    border-color: rgba(212,175,55,.2);
+}
+
+.template-barber .gallery-item img {
+    min-height: 0;
+}
+
+.template-barber .final-cta {
+    border-radius: 5px;
+    border-color: rgba(212,175,55,.35);
+    background:
+        radial-gradient(circle at top right, #292113, #111 65%);
+}
+
+.template-barber footer {
+    border-top: 1px solid rgba(212,175,55,.2);
+}
+
+@media (max-width: 700px) {
+    .template-barber .page {
+        padding: 12px;
+    }
+
+    .template-barber .hero {
+        min-height: 590px;
+        padding: 35px 22px;
+        border-radius: 5px;
+    }
+
+    .template-barber .hero h1 {
+        font-size: clamp(42px, 12vw, 64px);
+        letter-spacing: -2px;
+    }
+
+    .template-barber .hero-description {
+        font-size: 16px;
+        line-height: 1.6;
+    }
+
+    .template-barber .trust {
+        justify-content: flex-start;
+        padding: 22px 5px;
+    }
+
+    .template-barber .section {
+        margin: 60px 0;
+    }
+
+    .template-barber .gallery {
+        grid-template-columns: 1fr 1fr;
+        grid-auto-rows: 190px;
+    }
+
+    .template-barber .gallery-item:first-child {
+        grid-column: 1 / -1;
+    }
+}
 /* RESPONSIVE */
 
 @media(max-width:800px){
@@ -996,9 +1200,47 @@ async function loadBusiness(){
 
     /* THEME */
 
-    const theme =
-        THEMES[data.template_type]
-        || THEMES.general;
+    
+function normalizeText(value) {
+    return String(value || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim();
+}
+
+const businessType = normalizeText(
+    [
+        data.template_type,
+        data.category,
+        data.slug,
+        data.name
+    ].join(" ")
+);
+
+let templateType = data.template_type;
+
+if (
+    /barber|barberia|peluqueria masculina/.test(businessType)
+) {
+    templateType = "barber";
+} else if (
+    /cafeteria|cafe de especialidad/.test(businessType)
+) {
+    templateType = "cafe";
+} else if (
+    /restaurante|restaurant/.test(businessType)
+) {
+    templateType = "restaurant";
+} else if (
+    /belleza|estetica|cosmetica|cuidado capilar/.test(businessType)
+) {
+    templateType = "beauty";
+}
+
+const theme = THEMES[templateType] || THEMES.general;
+
+document.body.classList.add("template-" + templateType);
 
 
     document.documentElement.style.setProperty(
