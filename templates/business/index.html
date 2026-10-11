@@ -1375,6 +1375,41 @@ if (
 
 const theme = THEMES[templateType] || THEMES.general;
 
+/* PORTADA FOTOGRÁFICA BARBERÍA PREMIUM */
+if (templateType === "barber") {
+    const hero = document.querySelector(".hero");
+
+    const gallery = Array.isArray(data.gallery)
+        ? data.gallery
+        : [];
+
+    const firstImage = gallery
+        .map(item => typeof item === "string" ? item : item?.url)
+        .find(url => {
+            try {
+                const parsed = new URL(url);
+                return ["https:", "http:"].includes(parsed.protocol);
+            } catch {
+                return false;
+            }
+        });
+
+    if (hero && firstImage) {
+        hero.style.backgroundImage = `
+            linear-gradient(
+                90deg,
+                rgba(0,0,0,.94) 0%,
+                rgba(0,0,0,.72) 48%,
+                rgba(0,0,0,.18) 100%
+            ),
+            linear-gradient(0deg, #090909 0%, transparent 45%),
+            url("${firstImage.replace(/["\\]/g, "")}")
+        `;
+        hero.style.backgroundSize = "cover";
+        hero.style.backgroundPosition = "center";
+    }
+}
+
 document.body.classList.add("template-" + templateType);
 
 
